@@ -9,6 +9,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { firebaseApp } from "./firebase-config";
 
@@ -57,6 +58,11 @@ export const setDocData = async (docName, docData, otherData = {}) => {
   }
 };
 
-export const updateDocData = async(docName,docData, otherData={})=>{
-    
-}
+export const updateDocData = async (docName, docData, otherData = {}) => {
+  try {
+    const docRef = await addDoc(firestore, docName, docData);
+    return await updateDoc(docRef, { ...otherData });
+  } catch (error) {
+    throw error;
+  }
+};
