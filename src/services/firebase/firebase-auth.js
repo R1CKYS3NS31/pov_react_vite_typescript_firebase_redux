@@ -22,7 +22,7 @@ const isUserSignedIn = () => {
   return !!getAuth().currentUser;
 };
 
-export const currentUser = getAuth().currentUser
+export const currentUser = () => getAuth().currentUser;
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 const authStateObserver = async () => {

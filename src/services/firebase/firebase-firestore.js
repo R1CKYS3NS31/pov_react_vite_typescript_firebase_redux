@@ -37,7 +37,7 @@ export const loadDocData = async (docName, limitNo = 12) => {
     onSnapshot(recentQuery, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === "removed") {
-          // delete doc
+          // deleted doc - delete local doc
         } else {
           const docData = change.doc;
           return docData;
