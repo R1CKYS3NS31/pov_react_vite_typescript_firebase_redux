@@ -6,7 +6,7 @@ import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+const config = {
   apiKey: process.env.API_KEY || "",
   authDomain: process.env.AUTH_DOMAIN || "",
   projectId: process.env.PROJECT_ID || "",
@@ -16,6 +16,17 @@ const firebaseConfig = {
   measurementId: process.env.MEASUREMENT_ID || "",
 };
 
+const firebaseConfig = () => {
+  if (!config || !config.apiKey) {
+    throw new Error(
+      "No firebase configuration object provided." +
+        "\n" +
+        "Add your web app's configuration object to firebase-config.js file"
+    );
+  } else {
+    return config;
+  }
+};
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const firebaseApp = initializeApp(firebaseConfig);
+const analytics = getAnalytics(firebaseApp);
