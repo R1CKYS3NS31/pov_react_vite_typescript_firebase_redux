@@ -27,7 +27,7 @@ export const saveDocData = async (docName, docData) => {
   }
 };
 
-export const loadDocsData = async (docName, limitNo = 12, filters ={}) => {
+export const loadDocsData = async (docName, limitNo = 12) => {
   try {
     const recentQuery = query(
       collection(firestore),
@@ -37,8 +37,8 @@ export const loadDocsData = async (docName, limitNo = 12, filters ={}) => {
     );
 
     // return (await getDocs(recentQuery)) // or
-    return onSnapshot(recentQuery, (snapshot) => {
-      return snapshot.docChanges().forEach((change) => {
+    onSnapshot(recentQuery, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
         if (change.type === "removed") {
           // deleted doc - delete local doc
         }
