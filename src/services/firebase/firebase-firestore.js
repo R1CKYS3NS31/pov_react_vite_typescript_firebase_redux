@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getFirestore,
@@ -16,9 +17,9 @@ import { firebaseApp } from "./firebase-config";
 
 const firestore = getFirestore(firebaseApp);
 
-export const saveDocData = async (docName, docData) => {
+export const saveDocData = async (docName, pathSegment, docData) => {
   try {
-    return await addDoc(collection(firestore), docName, {
+    return await addDoc(collection(firestore, docName, pathSegment), {
       ...docData,
       timestamp: serverTimestamp(),
     });
@@ -51,10 +52,9 @@ export const loadDocsData = async (docName, limitNo = 12) => {
   }
 };
 
-export const loadDocDataById = async (docName, docId) => {
+export const loadDocDataById = async (docName, path, pathSegment) => {
   try {
-    if (!docId) return;
-    const docRef = doc(collection(firestore), docName, docId);
+    const docRef = doc(collection(firestore, docName), path, pathSegment);
     const docSnapshot = await getDoc(docRef);
     return docSnapshot;
   } catch (error) {
@@ -62,19 +62,33 @@ export const loadDocDataById = async (docName, docId) => {
   }
 };
 
-export const setDocData = async (docName, docData, otherData = {}) => {
+export const setDocData = async (docName, path, pathSegment, docData = {}) => {
   try {
-    const docRef = doc(firestore, docName, docData);
-    return await setDoc(docRef, { ...otherData, timestamp: serverTimestamp() });
+    const docRef = doc(collection(firestore, docName), path, pathSegment);
+    return await setDoc(docRef, { ...docData, timestamp: serverTimestamp() });
   } catch (error) {
     throw error;
   }
 };
 
-export const updateDocData = async (docName, docData, otherData = {}) => {
+export const updateDocData = async (
+  docName,
+  path,
+  pathSegment,
+  docData = {}
+) => {
   try {
-    const docRef = await addDoc(firestore, docName, docData);
-    return await updateDoc(docRef, { ...otherData });
+    const docRef = doc(collection(firestore, docName), path, pathSegment);
+    return await updateDoc(docRef, { ...docData });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteDocData = async (docName, path, pathSegment) => {
+  try {
+    const docRef = doc(collection(firestore, docName), path, pathSegment);
+    return await deleteDoc(docRef);
   } catch (error) {
     throw error;
   }
