@@ -2,6 +2,8 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
+  getDocs,
   getFirestore,
   limit,
   onSnapshot,
@@ -26,7 +28,7 @@ export const saveDocData = async (docName, docData) => {
   }
 };
 
-export const loadDocData = async (docName, limitNo = 12) => {
+export const loadDocsData = async (docName, limitNo = 12, filters ={}) => {
   try {
     const recentQuery = query(
       collection(firestore),
@@ -34,8 +36,10 @@ export const loadDocData = async (docName, limitNo = 12) => {
       orderBy("timestamp", "desc"),
       limit(limitNo)
     );
-    onSnapshot(recentQuery, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
+
+    // return (await getDocs(recentQuery)) // or
+    return onSnapshot(recentQuery, (snapshot) => {
+      return snapshot.docChanges().forEach((change) => {
         if (change.type === "removed") {
           // deleted doc - delete local doc
         }
@@ -43,6 +47,17 @@ export const loadDocData = async (docName, limitNo = 12) => {
         return docData;
       });
     });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const loadDocDataById = async (docName, docId) => {
+  try {
+    if (!docId) return;
+    const docRef = doc(collection(firestore), docName, docId);
+    const docSnapshot = await getDoc(docRef);
+    return docSnapshot;
   } catch (error) {
     throw error;
   }
