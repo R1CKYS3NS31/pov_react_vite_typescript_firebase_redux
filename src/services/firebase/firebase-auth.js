@@ -1,9 +1,15 @@
 import {
   GoogleAuthProvider,
+  deleteUser,
   getAuth,
   onAuthStateChanged,
+  sendEmailVerification,
+  sendPasswordResetEmail,
   signInWithPopup,
   signOut,
+  updateEmail,
+  updatePassword,
+  updateProfile,
 } from "firebase/auth";
 import { firebaseApp } from "./firebase-config";
 
@@ -42,3 +48,69 @@ export const currentUser = () =>
       return null;
     }
   });
+
+// const updateUserProfile = async () => {
+//   await updateProfile(currentUser, {
+//     displayName: "Jane Q. User",
+//     photoURL: "https://example.com/jane-q-user/profile.jpg",
+//   })
+//     .then(() => {
+//       // Profile updated!
+//       // ...
+//     })
+//     .catch((error) => {
+//       throw error;
+//     });
+
+//   await sendEmailVerification(currentUser)
+//     .then(() => {
+//       // Email verification sent!
+//       // ...
+//     })
+//     .catch((error) => {
+//       throw error;
+//     });
+
+//   await updateEmail(auth.currentUser, "user@example.com")
+//     .then(() => {
+//       // Email updated!
+//       // ...
+//     })
+//     .catch((error) => {
+//       // An error occurred
+//       // ...
+//     });
+
+//   await sendPasswordResetEmail(auth, "user@example.com")
+//     .then(() => {
+//       // Password reset email sent!
+//       // ..
+//     })
+//     .catch((error) => {
+//       const errorCode = error.code;
+//       const errorMessage = error.message;
+//       // ..
+//     });
+
+//   await updatePassword(currentUser, "xi9ws9qa")
+//     .then(() => {
+//       // Update successful.
+//     })
+//     .catch((error) => {
+//       // An error ocurred
+//       // ...
+//       throw error;
+//     });
+// };
+
+// const deleteUserProfile = async (user) => {
+//   await deleteUser(user)
+//     .then(() => {
+//       // User deleted.
+//     })
+//     .catch((error) => {
+//       // An error ocurred
+//       // ...
+//       throw error;
+//     });
+// };
