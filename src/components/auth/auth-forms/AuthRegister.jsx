@@ -33,7 +33,13 @@ import {
 import { signUp } from "../../../services/api/user/api-auth";
 import { setAccountUser } from "../../../services/redux/slices/user/accountUserSlice";
 import { auth } from "../../../utils/auth_helper";
-import { currentUser, signInWithGoogleAUth } from "../../../services/firebase/firebase-auth";
+import {
+  currentUser,
+  isUserSignedIn,
+  saveUserAccount,
+  signInWithGoogleAUth,
+} from "../../../services/firebase/firebase-auth";
+import { saveUserFirebase } from "../../../services/firebase/model/user-firebase";
 
 export const AuthRegister = () => {
   const theme = useTheme();
@@ -73,8 +79,11 @@ export const AuthRegister = () => {
       const signedInUser = await signInWithGoogleAUth();
       if (signedInUser) {
         setLoading(false);
-
-        console.log(`sign in with google - ${currentUser}`);
+        if (isUserSignedIn()) {
+          const savedUser = await saveUserAccount();
+          // console.log(savedUser);
+          const token = savedUser.getIdToken()
+        }
       }
     } catch (error) {
       // setGoogleAuthError(error);
