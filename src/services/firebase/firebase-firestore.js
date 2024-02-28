@@ -37,7 +37,7 @@ export const loadDocsData = async (docName, limitNo = 12) => {
     );
 
     // return (await getDocs(recentQuery)) // or
-    onSnapshot(recentQuery, (snapshot) => {
+    onSnapshot(recentQuery, (snapshot) => { // NB:// costly
       snapshot.docChanges().forEach((change) => {
         if (change.type === "removed") {
           // deleted doc - delete local doc
@@ -64,7 +64,11 @@ export const loadDocDataById = async (docName, path, pathSegment) => {
 export const setDocData = async (docName, path, pathSegment, docData = {}) => {
   try {
     const docRef = doc(collection(firestore, docName), path, pathSegment);
-    return await setDoc(docRef, { ...docData, timestamp: serverTimestamp() });
+    return await setDoc(
+      docRef,
+      { ...docData, timestamp: serverTimestamp() },
+      { merge: true }
+    );
   } catch (error) {
     throw error;
   }

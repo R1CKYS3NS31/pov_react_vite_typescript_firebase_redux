@@ -11,9 +11,9 @@ export const fetchUsers = async () => {
   }
 };
 
-export const fetchUser = async (userId, credentials) => {
+export const fetchUser = async (credentials) => {
   try {
-    const user = await client.get(`${config.apiUrl}/api/users/:${userId}`, {
+    const user = await client.get(`${config.apiUrl}/api/users/account`, {
       headers: {
         Authorization: "Bearer " + credentials,
       },
@@ -24,11 +24,11 @@ export const fetchUser = async (userId, credentials) => {
   }
 };
 
-export const updateUser = async (userId, user, credentials) => {
-//   console.log(" - ", user);
+export const updateUser = async (user, credentials) => {
+  //   console.log(" - ", user);
   try {
     const userUpdated = await client.put(
-      `${config.apiUrl}/api/users/${userId}`,
+      `${config.apiUrl}/api/users/account`,
       user,
       {
         headers: {
@@ -42,10 +42,10 @@ export const updateUser = async (userId, user, credentials) => {
   }
 };
 
-export const deleteUser = async (userId, credentials) => {
+export const deleteUser = async (credentials) => {
   try {
     const userDeleted = await client.delete(
-      `${config.apiUrl}/api/users/${userId}`,
+      `${config.apiUrl}/api/users/account`,
       {
         headers: {
           Authorization: "Bearer " + credentials,

@@ -67,17 +67,19 @@ export const CreatePoV = () => {
           const povId = povCreated.id;
           const pov = await getPoVFirebase(povId);
           console.log(pov);
-          dispatch(addPoV(pov.data));
-          setTitle("");
-          setSubtitle("");
-          setPoints("");
-          // Check if there's a previous location in the state object
-          if (location.state && location.state.from) {
-            // Navigate back to the previous location
-            navigate(location.state.from);
-          } else {
-            // If there's no previous location, navigate to the user's dashboard
-            navigate("/", { replace: true });
+          if (pov.exists()) {
+            dispatch(addPoV(pov.data));
+            setTitle("");
+            setSubtitle("");
+            setPoints("");
+            // Check if there's a previous location in the state object
+            if (location.state && location.state.from) {
+              // Navigate back to the previous location
+              navigate(location.state.from);
+            } else {
+              // If there's no previous location, navigate to the user's dashboard
+              navigate("/", { replace: true });
+            }
           }
         }
       } else {
