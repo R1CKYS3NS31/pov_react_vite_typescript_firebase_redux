@@ -31,6 +31,14 @@ export const getPoVsFirebase = async () => {
   }
 };
 
+export const getPoVsByOwnerFirebase = async () => {
+  try {
+    return await loadDocsData(docName);
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getPoVFirebase = async (povId) => {
   try {
     return await loadDocDataById(docName, povId, "")
