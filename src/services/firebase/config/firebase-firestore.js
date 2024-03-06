@@ -17,7 +17,7 @@ import { firebaseApp } from "./firebase-config";
 
 const firestore = getFirestore(firebaseApp);
 
-export const saveDocData = async (docName, pathSegment, docData) => {
+export const saveDocData = async (docName, pathSegment = "", docData) => {
   try {
     return await addDoc(collection(firestore, docName, pathSegment), {
       ...docData,
@@ -37,13 +37,14 @@ export const loadDocsData = async (docName, limitNo = 12) => {
     );
 
     // return (await getDocs(recentQuery)) // or
-   return onSnapshot(recentQuery, (snapshot) => { // NB:// costly
+    return onSnapshot(recentQuery, (snapshot) => {
+      // NB:// costly
       snapshot.docChanges().forEach((change) => {
         if (change.type === "removed") {
           // deleted doc - delete local doc
         }
         const docData = change.doc;
-        return docData;
+        return docData.data();
       });
     });
   } catch (error) {
@@ -51,24 +52,35 @@ export const loadDocsData = async (docName, limitNo = 12) => {
   }
 };
 
-export const loadDocDataById = async (docName, path, pathSegment) => {
+export const loadDocDataById = async (docName, path, pathSegment = "") => {
   try {
     const docRef = doc(collection(firestore, docName), path, pathSegment);
     const docSnapshot = await getDoc(docRef);
-    return docSnapshot;
+    return docSnapshot.data();
   } catch (error) {
     throw error;
   }
 };
 
-export const setDocData = async (docName, path, pathSegment, docData = {}) => {
+export const setDocData = async (
+  docName,
+  path,
+  pathSegment = "",
+  docData = {}
+) => {
   try {
     const docRef = doc(collection(firestore, docName), path, pathSegment);
     return await setDoc(
       docRef,
       { ...docData, timestamp: serverTimestamp() },
       { merge: true }
-    );
+    )
+      .then((value) => {
+        return value;
+      })
+      .catch((error) => {
+        throw error;
+      });
   } catch (error) {
     throw error;
   }
@@ -81,14 +93,18 @@ export const updateDocData = async (
   docData = {}
 ) => {
   try {
-    const docRef = doc(collection(firestore, docName), path, pathSegment);
+    const docRef = doc(
+      collection(firestore, docName),
+      path,
+      (pathSegment = "")
+    );
     return await updateDoc(docRef, { ...docData });
   } catch (error) {
     throw error;
   }
 };
 
-export const deleteDocData = async (docName, path, pathSegment) => {
+export const deleteDocData = async (docName, path, pathSegment = "") => {
   try {
     const docRef = doc(collection(firestore, docName), path, pathSegment);
     return await deleteDoc(docRef);

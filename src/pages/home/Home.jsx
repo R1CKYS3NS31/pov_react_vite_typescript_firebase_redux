@@ -67,7 +67,7 @@ export const Home = () => {
               sx={{ m: "8px" }}
             />
             <Typography variant="h5">
-              {accountUser ? accountUser.user.first : "Guest"}
+              {accountUser ? accountUser.user.name.first : "Guest"}
             </Typography>
           </Fab>
           <Fab

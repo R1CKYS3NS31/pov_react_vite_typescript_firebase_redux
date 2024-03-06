@@ -82,7 +82,7 @@ export const AuthRegister = () => {
       const signedIn = await signInWithGoogleAUth();
       if (signedIn && isUserSignedIn()) {
         setLoading(false);
-        console.log(signedIn.user); // remove log
+        // console.log(signedIn.user); // remove log
         const token = await signedIn.user.getIdToken();
         const { uid, displayName, email, photoUrl } = signedIn.user;
         const { first, last } = displayName;
@@ -101,7 +101,7 @@ export const AuthRegister = () => {
         });
 
         const savedUser = await saveUserFirebase(user);
-        console.log(savedUser); // remove log
+        // console.log(savedUser); // remove log
       }
     } catch (error) {
       setGoogleAuthError(error.message);
@@ -135,10 +135,9 @@ export const AuthRegister = () => {
         user.email,
         user.password,
         first + " " + last,
-        user.photoURL || "/assets/images/profile_placeholder.png"
+        "/assets/images/profile_placeholder.png"
       );
-      // console.log(user);
-      console.log("signedUpUser: ", signedUpUser); // remove log
+        // console.log("signedUpUser: ", signedUpUser); // remove log
       if (signedUpUser && isUserSignedIn()) {
         const { accessToken, uid, email, photoURL } = signedUpUser;
 
@@ -154,8 +153,8 @@ export const AuthRegister = () => {
         };
 
         auth.authenticate(accessToken, async () => {
-          dispatch(setAccountUser({ token: accessToken, user: userSave }));
           const savedUser = await setUserFirebase(userSave);
+          dispatch(setAccountUser({ token: accessToken, user: userSave }));
           console.log("savedUser", savedUser); // remove log
           setLoading(false);
           // Check if there's a previous location in the state object
@@ -169,10 +168,6 @@ export const AuthRegister = () => {
         });
       }
     } catch (error) {
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // alert(errorCode + " - " + errorMessage);
-      // alert(error)
       console.error(error);
       setLoading(false);
       setError(`* ${error.message}`);
@@ -201,7 +196,7 @@ export const AuthRegister = () => {
         password: password,
       };
       signUpUser(user);
-      // console.log(user);
+      // console.log(user); // remove log
     } catch (error) {
       setError(error.message);
     }

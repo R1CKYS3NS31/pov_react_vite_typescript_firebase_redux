@@ -62,6 +62,7 @@ export const CreatePoV = () => {
       if (accountUser) {
         // const povCreated = await createPoV(newPov);
         const povCreated = await savePoVFirebase(newPov);
+        console.log('new PoV',povCreated);
         if (povCreated) {
           const povId = povCreated.id;
           const pov = await getPoVFirebase(povId);

@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   FormControlLabel,
   FormHelperText,
@@ -28,9 +29,13 @@ import { signin } from "../../../services/api/user/api-auth";
 import { auth } from "../../../utils/auth_helper";
 import {
   isUserSignedIn,
+  signInUserWithEmailAndPassword,
   signInWithGoogleAUth,
 } from "../../../services/firebase/config/firebase-auth";
-import { saveUserFirebase } from "../../../services/firebase/controller/user-firebase";
+import {
+  getUserFirebase,
+  saveUserFirebase,
+} from "../../../services/firebase/controller/user-firebase";
 
 export const AuthLogin = () => {
   const theme = useTheme();
@@ -64,7 +69,7 @@ export const AuthLogin = () => {
       const signedIn = await signInWithGoogleAUth();
       if (signedIn && isUserSignedIn()) {
         setLoading(false);
-        console.log('user',signedIn.user); // remove log
+        // console.log('user',signedIn.user); // remove log
         const token = await signedIn.user.getIdToken();
         const { uid, displayName, email, photoUrl } = signedIn.user;
         const { first, last } = displayName;
@@ -103,13 +108,22 @@ export const AuthLogin = () => {
 
   const signInUser = async (user) => {
     try {
+      setLoading(true);
       // const signedInUser = await signin(user);
-      const signedInUser = await signin(user);
-      // console.log(signedInUser);
+      const signedInUser = await signInUserWithEmailAndPassword(
+        await user.email,
+        await user.password
+      );
+      // console.log("signedIn user", signedInUser); // remove log
 
       if (signedInUser) {
-        auth.authenticate(signedInUser.token, () => {
-          dispatch(setAccountUser(signedInUser));
+        const { uid, accessToken } = signedInUser;
+        auth.authenticate(accessToken, async () => {
+          const savedUser = await getUserFirebase(uid);
+          console.log("saved user", savedUser); // remove log
+          dispatch(setAccountUser({ token: accessToken, user: savedUser }));
+
+          setLoading(false);
         });
 
         // Check if there's a previous location in the state object
@@ -310,9 +324,9 @@ export const AuthLogin = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={error ? true : false}
+            disabled={error || loading ? true : false}
           >
-            Sign In
+            {loading ? <CircularProgress /> : "Sign In"}
           </Button>
           <Grid container>
             <Grid item xs>
