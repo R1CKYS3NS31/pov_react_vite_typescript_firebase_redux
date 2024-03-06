@@ -84,14 +84,14 @@ export const MyPoV = ({ pov }) => {
             <Fab
               size="small"
               onClick={() =>
-                navigate(`/pov/edit/${pov._id}`, { replace: true })
+                navigate(`/pov/edit/${pov.id}`, { replace: true })
               }
             >
               <Edit fontSize="small" />
             </Fab>
           </Grid>
           <Grid item>
-            <Fab size="small" onClick={() => handleDeletePov(pov._id)}>
+            <Fab size="small" onClick={() => handleDeletePov(pov.id)}>
               <DeleteForever fontSize="small" />
             </Fab>
           </Grid>

@@ -59,7 +59,12 @@ export const getUsersFirebase = async () => {
 
 export const getUserFirebase = async (userId) => {
   try {
-    return (await loadDocDataById(docName, userId));
+    const userSnapShot = await loadDocDataById(docName, userId);
+    return {
+      ...userSnapShot.data(),
+      exists: userSnapShot.exists(),
+      uid: userId,
+    };
   } catch (error) {
     throw error;
   }

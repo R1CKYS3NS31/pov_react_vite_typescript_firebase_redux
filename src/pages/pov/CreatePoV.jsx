@@ -43,32 +43,24 @@ export const CreatePoV = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // const poVFormData = new FormData(event.currentTarget);
-      const newPov = {
-        // id: new Date(),
-        title: title,
-        subtitle: subtitle,
-        points: points,
-        owner: accountUser.user.uid,
-      };
-
-      // poVFormData.append("title", newPov.id);
-      // poVFormData.append("title", newPov.title);
-      // poVFormData.append("subtitle", newPov.subtitle);
-      // poVFormData.append("points", newPov.points);
-
-      // console.log(`pov created: ${newPov.title}`);
-
       if (accountUser) {
+        const newPov = {
+          // id: new Date(),
+          title: title,
+          subtitle: subtitle,
+          points: points,
+          owner: await accountUser.user.uid,
+        };
+
+        // console.log(`pov created: ${newPov.title}`);
         // const povCreated = await createPoV(newPov);
         const povCreated = await savePoVFirebase(newPov);
-        console.log('new PoV',povCreated);
+        console.log("new PoV", povCreated);
         if (povCreated) {
           const povId = povCreated.id;
           const pov = await getPoVFirebase(povId);
-          console.log(pov);
-          if (pov.exists()) {
-            dispatch(addPoV(pov.data));
+                  if (pov.exists) {
+            dispatch(addPoV(pov));
             setTitle("");
             setSubtitle("");
             setPoints("");

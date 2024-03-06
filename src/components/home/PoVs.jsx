@@ -47,7 +47,7 @@ export const PoVs = () => {
       <Typography variant="h2">PoVs</Typography>
       {povs &&
         povs.map((pov) => (
-          <Grid item key={pov._id}>
+          <Grid item key={pov.id}>
             <PoV pov={pov} />
           </Grid>
         ))}

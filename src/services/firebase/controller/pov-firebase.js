@@ -1,8 +1,10 @@
-import { saveDocData ,deleteDocData,
+import {
+  saveDocData,
+  deleteDocData,
   loadDocDataById,
   loadDocsData,
-  setDocData,} from "../config/firebase-firestore";
-
+  setDocData,
+} from "../config/firebase-firestore";
 
 const docName = "povs";
 
@@ -15,7 +17,7 @@ export const savePoVFirebase = async (pov = {}) => {
       points: points,
       owner: owner,
     };
-    return (await saveDocData(docName, "", povData));
+    return await saveDocData(docName, "", povData);
   } catch (error) {
     throw error;
   }
@@ -31,7 +33,17 @@ export const getPoVsFirebase = async () => {
 
 export const getPoVFirebase = async (povId) => {
   try {
-    return await loadDocDataById(docName, povId,'');
+    return await loadDocDataById(docName, povId, "")
+      .then((povSnapshot) => {
+        return {
+          id: povSnapshot.id,
+          exists: povSnapshot.exists(),
+          ...povSnapshot.data(),
+        };
+      })
+      .catch((error) => {
+        throw error;
+      });
   } catch (error) {
     throw error;
   }
@@ -45,7 +57,7 @@ export const getPoVFirebase = async (povId) => {
 //   }
 // };
 
-export const updatePoVFirebase = async (uid,povId, pov) => {
+export const updatePoVFirebase = async (uid, povId, pov) => {
   try {
     const { title, subtitle, points, owner } = pov;
     const povData = {

@@ -121,7 +121,12 @@ export const AuthLogin = () => {
         auth.authenticate(accessToken, async () => {
           const savedUser = await getUserFirebase(uid);
           console.log("saved user", savedUser); // remove log
-          dispatch(setAccountUser({ token: accessToken, user: savedUser }));
+          dispatch(
+            setAccountUser({
+              token: accessToken,
+              user: { ...savedUser, uid: uid },
+            })
+          );
 
           setLoading(false);
         });

@@ -15,7 +15,7 @@ export const PoVs = () => {
       const povsFetched = await getPoVsFirebase()
       console.log(povsFetched); // log povs
       if (povsFetched) {
-        dispatch(setPovs(povsFetched.data));
+        dispatch(setPovs(povsFetched));
       }
     };
     povsFetch();
@@ -29,9 +29,9 @@ export const PoVs = () => {
       }}
       direction={"column"}
     >
-      {povs &&
-        povs.map((pov) => (
-          <Grid item key={pov._id}>
+      {!povs.empty &&
+        povs.docs.map((pov) => (
+          <Grid item key={pov.id}>
             <PoV pov={pov} />
           </Grid>
         ))}

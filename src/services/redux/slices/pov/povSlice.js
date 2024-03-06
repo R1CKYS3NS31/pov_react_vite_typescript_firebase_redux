@@ -14,19 +14,19 @@ export const povSlice = createSlice({
     getPoVById: (state, action) => {
       const povId = action.payload;
       if (state.povs) {
-        return state.povs.finc((pov) => pov._id === povId);
+        return state.povs.finc((pov) => pov.id === povId);
       }
       return null;
     },
     editPoV: (state, action) => {
       const updatedPoV = action.payload;
       return state.map((existingPoV) =>
-        existingPoV._id === updatedPoV._id ? updatedPoV : existingPoV
+        existingPoV.id === updatedPoV.id ? updatedPoV : existingPoV
       );
     },
     removePov: (state, action) => {
       const povIdToDelete = action.payload;
-      return state.filter((existingPoV) => existingPoV._id !== povIdToDelete);
+      return state.filter((existingPoV) => existingPoV.id !== povIdToDelete);
     },
     removeAllPoVs: (state, action) => {
       return [];

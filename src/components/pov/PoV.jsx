@@ -56,7 +56,7 @@ export const PoV = ({ pov }) => {
             <Fab
               size="small"
               onClick={() =>
-                navigate(`/pov/edit/${pov._id}`, { replace: true })
+                navigate(`/pov/edit/${pov.id}`, { replace: true })
               }
             >
               <Edit fontSize="small" />

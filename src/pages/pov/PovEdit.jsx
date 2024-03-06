@@ -63,7 +63,7 @@ export const PovEdit = () => {
       };
 
       // const povUpdated = await updatePoV(
-      //   accountUser.user._id,
+      //   accountUser.user.uid,
       //   povId,
       //   editPov,
       //   accountUser.token

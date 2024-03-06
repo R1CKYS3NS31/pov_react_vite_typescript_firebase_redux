@@ -36,7 +36,7 @@ export const MyPoVs = () => {
     >
       {povs ? (
         povs.map((pov) => (
-          <Grid item key={pov._id}>
+          <Grid item key={pov.id}>
             <MyPoV pov={pov} />
           </Grid>
         ))
