@@ -29,8 +29,8 @@ import { auth } from "../../../utils/auth_helper";
 import {
   isUserSignedIn,
   signInWithGoogleAUth,
-} from "../../../services/firebase/firebase-auth";
-import { saveUserFirebase } from "../../../services/firebase/model/user-firebase";
+} from "../../../services/firebase/config/firebase-auth";
+import { saveUserFirebase } from "../../../services/firebase/controller/user-firebase";
 
 export const AuthLogin = () => {
   const theme = useTheme();

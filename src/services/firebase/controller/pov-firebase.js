@@ -1,10 +1,8 @@
-import {
-  deleteDocData,
+import { saveDocData ,deleteDocData,
   loadDocDataById,
   loadDocsData,
-  saveDocData,
-  setDocData,
-} from "../firebase-firestore";
+  setDocData,} from "../config/firebase-firestore";
+
 
 const docName = "povs";
 

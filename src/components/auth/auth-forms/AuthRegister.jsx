@@ -38,11 +38,11 @@ import {
   isUserSignedIn,
   signInWithGoogleAUth,
   signUpUserWithEmailAndPassword,
-} from "../../../services/firebase/firebase-auth";
+} from "../../../services/firebase/config/firebase-auth";
 import {
   saveUserFirebase,
   setUserFirebase,
-} from "../../../services/firebase/model/user-firebase";
+} from "../../../services/firebase/controller/user-firebase";
 
 export const AuthRegister = () => {
   const theme = useTheme();

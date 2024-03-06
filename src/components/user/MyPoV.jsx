@@ -5,7 +5,7 @@ import { deletePoV } from "../../services/api/pov/api-pov";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { removePov } from "../../services/redux/slices/pov/povSlice";
-import { deletePoVFirebase } from "../../services/firebase/model/pov-firebase";
+import { deletePoVFirebase } from "../../services/firebase/controller/pov-firebase";
 
 export const MyPoV = ({ pov }) => {
   const navigate = useNavigate();

@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOutAccountUser } from "../../services/redux/slices/user/accountUserSlice";
 import { Logo } from "../../components/ui/Logo";
 import { PoVs } from "../pov/PoVs";
-import { signOutFirebaseUser } from "../../services/firebase/firebase-auth";
 import { auth } from "../../utils/auth_helper";
+import { signOutFirebaseUser } from "../../services/firebase/config/firebase-auth";
 
 export const Home = () => {
   const navigate = useNavigate();

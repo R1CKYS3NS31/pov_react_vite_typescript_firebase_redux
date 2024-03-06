@@ -1,10 +1,9 @@
 import { Grid } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPoVs } from "../../services/api/pov/api-pov";
 import { setPovs } from "../../services/redux/slices/pov/povSlice";
 import { PoV } from "../../components/pov/PoV";
-import { getPoVsFirebase } from "../../services/firebase/model/pov-firebase";
+import { getPoVsFirebase } from "../../services/firebase/controller/pov-firebase";
 
 export const PoVs = () => {
   const dispatch = useDispatch();

@@ -13,8 +13,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { editPoV } from "../../services/redux/slices/pov/povSlice";
-import { fetchPov, updatePoV } from "../../services/api/pov/api-pov";
-import { getPoVFirebase, updatePoVFirebase } from "../../services/firebase/model/pov-firebase";
+import { getPoVFirebase, updatePoVFirebase } from "../../services/firebase/controller/pov-firebase";
 
 export const PovEdit = () => {
   const dispatch = useDispatch();

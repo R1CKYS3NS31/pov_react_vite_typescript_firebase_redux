@@ -2,15 +2,15 @@ import {
   deleteDocData,
   loadDocDataById,
   loadDocsData,
-  saveDocData,
   setDocData,
   updateDocData,
-} from "../firebase-firestore";
+  saveDocData,
+} from "../config/firebase-firestore";
 
 const docName = "users";
 export const saveUserFirebase = async (user = {}) => {
   try {
-    const { uid, name, email, photoUrl, isUser } = user;
+    const { name, email, photoUrl, isUser } = user;
 
     const userData = {
       name: {
@@ -22,7 +22,7 @@ export const saveUserFirebase = async (user = {}) => {
       photoUrl: photoUrl,
       isUser: isUser || true,
     };
-    return await saveDocData(docName, '', userData);
+    return await saveDocData(docName, "", userData);
   } catch (error) {
     throw error;
   }

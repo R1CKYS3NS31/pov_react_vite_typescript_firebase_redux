@@ -13,11 +13,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addPoV } from "../../services/redux/slices/pov/povSlice";
-import { createPoV } from "../../services/api/pov/api-pov";
 import {
   getPoVFirebase,
   savePoVFirebase,
-} from "../../services/firebase/model/pov-firebase";
+} from "../../services/firebase/controller/pov-firebase";
 
 export const CreatePoV = () => {
   const dispatch = useDispatch();
