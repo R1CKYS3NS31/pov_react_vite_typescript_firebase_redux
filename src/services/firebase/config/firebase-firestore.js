@@ -23,7 +23,8 @@ export const saveDocData = async (docName, pathSegment = "", docData) => {
   try {
     return await addDoc(collection(firestore, docName, pathSegment), {
       ...docData,
-      timestamp: serverTimestamp(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
       .then((docRef) => {
         return {
@@ -158,7 +159,7 @@ export const setDocData = async (
     const docRef = doc(collection(firestore, docName), path, pathSegment);
     return await setDoc(
       docRef,
-      { ...docData, timestamp: serverTimestamp() },
+      { ...docData, createdAt: new Date(), updatedAt: new Date() },
       { merge: true }
     )
       .then((value) => {
@@ -184,7 +185,7 @@ export const updateDocData = async (
       path,
       (pathSegment = "")
     );
-    return await updateDoc(docRef, { ...docData })
+    return await updateDoc(docRef, { ...docData, updatedAt: new Date() })
       .then((value) => {
         return value;
       })

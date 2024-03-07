@@ -62,7 +62,7 @@ export const Profile = () => {
                       accountUser.user.name.last}
                   </Typography>
                   <Typography variant="caption">
-                    {new Date(accountUser.user.createdAt).toDateString()}
+                    {new Date(accountUser.user.createdAt.seconds).toDateString()}
                   </Typography>
                 </Grid>
               </Grid>
