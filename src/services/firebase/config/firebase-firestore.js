@@ -10,7 +10,6 @@ import {
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
   setDoc,
   updateDoc,
   where,
@@ -78,7 +77,10 @@ export const loadDocsData = async (docName, limitNo = 12, filters = {}) => {
       .catch((error) => {
         throw error;
       }); // or
-    // onSnapshot(recentQuery, (snapshot) => { // realtime
+
+    // let colSnapshot={};
+    // onSnapshot(recentQuery, (snapshot) => {
+    //   // realtime
     //   // NB:// costly
     //   // snapshot.docChanges().forEach((change) => {
     //   //   if (change.type === "removed") {
@@ -86,18 +88,20 @@ export const loadDocsData = async (docName, limitNo = 12, filters = {}) => {
     //   //   }
     //   //   const docData = change.doc;
     //   // });
-    // return {
-    //   size: snapshot.size,
-    //   empty: snapshot.empty,
-    //   docs: snapshot.docs.flatMap((doc) => {
-    //     return {
-    //       id: doc.id,
-    //       exists: doc.exists(),
-    //       ...doc.data(),
-    //     };
-    //   }),
-    // };
+    //   colSnapshot = {
+    //     size: snapshot.size,
+    //     empty: snapshot.empty,
+    //     docs: snapshot.docs.flatMap((doc) => {
+    //       return {
+    //         id: doc.id,
+    //         exists: doc.exists(),
+    //         ...doc.data(),
+    //       };
+    //     }),
+    //   };
     // });
+
+    // return colSnapshot
   } catch (error) {
     throw error;
   }
@@ -123,7 +127,8 @@ export const loadDocsDataWhere = async (
       collection(firestore, docName),
       orderBy("timestamp", "desc"),
       limit(limitNo),
-      filter && where(filter.field, "==", filter.value)
+      // filter && where(filter.field, "==", filter.value)
+      where(filter.field, "==", filter.value)
     );
 
     return await getDocs(recentQuery)
@@ -136,7 +141,6 @@ export const loadDocsDataWhere = async (
               id: docSnapshot.id,
               exists: docSnapshot.exists(),
               ...docSnapshot.data(),
-              metadata: docSnapshot.metadata,
             };
           }),
         };

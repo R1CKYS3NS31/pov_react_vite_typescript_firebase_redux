@@ -157,7 +157,7 @@ export const AuthRegister = () => {
           const savedUser = await setUserFirebase(userSave);
           const userFirebase = await getUserFirebase(uid)
           dispatch(setAccountUser({ token: accessToken, user: userFirebase }));
-          console.log("savedUser", userFirebase); // remove log
+          // console.log("savedUser", userFirebase); // remove log
           setLoading(false);
           // Check if there's a previous location in the state object
           if (location.state && location.state.from) {

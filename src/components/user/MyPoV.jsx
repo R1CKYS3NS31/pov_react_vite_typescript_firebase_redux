@@ -22,13 +22,13 @@ export const MyPoV = ({ pov }) => {
 
   const handleDeletePov = async (povId) => {
     try {
+      // if (pov.owner === accountUser.user.uid) {
       // const povDeleted = await deletePoV(povId, accountUser.token);
-      const povDeleted = await deletePoVFirebase(povId);
-
-      if (povDeleted) {
-        dispatch(removePov(povId));
-      }
+      await deletePoVFirebase(povId);
+      dispatch(removePov(povId));
+      // }
     } catch (error) {
+      console.error(error);
       setError(error);
     }
   };
@@ -43,11 +43,6 @@ export const MyPoV = ({ pov }) => {
         mb: 2,
       }}
     >
-      {error && (
-        <Alert>
-          <AlertTitle title="Error" content={error} />
-        </Alert>
-      )}
       <Grid
         item
         flexGrow={12}

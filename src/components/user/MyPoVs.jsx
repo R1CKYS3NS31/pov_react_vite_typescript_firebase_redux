@@ -24,7 +24,7 @@ export const MyPoVs = () => {
       }
     };
     povsFetch();
-  }, [dispatch, accountUser]);
+  }, [dispatch, accountUser,povs]);
 
   return (
     <Grid

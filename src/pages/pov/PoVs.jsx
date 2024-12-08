@@ -12,7 +12,7 @@ export const PoVs = () => {
   useEffect(() => {
     const povsFetch = async () => {
       // const povsFetched = await fetchPoVs();
-      const povsFetched = await getPoVsFirebase()
+      const povsFetched = await getPoVsFirebase();
       console.log(povsFetched); // log povs
       if (povsFetched) {
         dispatch(setPovs(povsFetched));
@@ -23,13 +23,14 @@ export const PoVs = () => {
 
   return (
     <Grid
-      container      
+      container
       sx={{
         flex: 2,
       }}
       direction={"column"}
     >
-      {!povs.empty &&
+      {povs &&
+        !povs.empty &&
         povs.docs.map((pov) => (
           <Grid item key={pov.id}>
             <PoV pov={pov} />

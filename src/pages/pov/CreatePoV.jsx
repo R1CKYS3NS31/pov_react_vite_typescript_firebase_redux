@@ -52,16 +52,15 @@ export const CreatePoV = () => {
           owner: await accountUser.user.uid,
         };
 
-        // console.log(`pov created: ${newPov.title}`);
         // const povCreated = await createPoV(newPov);
         const povCreated = await savePoVFirebase(newPov);
-        console.log("new PoV", povCreated);
+        // console.log("new PoV", povCreated); // remove log
         if (povCreated) {
           const povId = povCreated.id;
           const pov = await getPoVFirebase(povId);
-          console.log("new PoV", pov);
+          // console.log("new PoV", pov); // remove log
           if (pov.exists) {
-            dispatch(addPoV(await pov));
+            dispatch(addPoV(pov));
             setTitle("");
             setSubtitle("");
             setPoints("");
