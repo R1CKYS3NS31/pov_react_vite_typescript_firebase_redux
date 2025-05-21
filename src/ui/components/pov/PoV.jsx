@@ -338,7 +338,7 @@ export const PoV = ({ pov }) => {
         <Stack direction={"row"} justifyContent={"space-between"}>
           <Stack direction={"row"} spacing={1}>
             <Link to={`/profile/${pov.author.id}`}>
-              <Avatar src={pov.author.photoUrl} alt={pov.author.name.first} />{" "}
+              <Avatar src={pov.author.displayPicture} alt={pov.author.name.first} />{" "}
             </Link>
             <Stack>
               <Typography

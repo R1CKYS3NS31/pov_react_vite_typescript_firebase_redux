@@ -52,7 +52,7 @@ export const DialogCommentPoV = ({ open, handleClose, handleSubmit, pov }) => {
                     <Avatar
                       variant="circular"
                       alt={comment.postedBy.name.first}
-                      src={comment.postedBy.photoUrl}
+                      src={comment.postedBy.displayPicture}
                     />
                   </ListItemAvatar>
                   <ListItemText

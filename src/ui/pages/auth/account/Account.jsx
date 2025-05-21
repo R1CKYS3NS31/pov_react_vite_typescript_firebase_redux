@@ -135,7 +135,7 @@ export const Account = () => {
               <Avatar
                 variant="rounded"
                 alt={userAccount ? userAccount.name.first : "Guest"}
-                src={userAccount.photoUrl}
+                src={userAccount.displayPicture}
                 sx={{
                   width: "100px",
                   height: "100px",

@@ -78,7 +78,7 @@ export const Profile = () => {
               <Avatar
                 variant="rounded"
                 alt={profile ? profile.name.first : "Guest"}
-                src={profile && profile.photoUrl}
+                src={profile && profile.displayPicture}
                 sx={{
                   width: "100px",
                   height: "100px",

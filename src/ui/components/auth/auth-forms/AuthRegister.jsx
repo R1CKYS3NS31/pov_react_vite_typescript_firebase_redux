@@ -18,18 +18,22 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   LockPersonOutlined,
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux"
-import { strengthColor, strengthIndicator } from "../../../../utils/password-strength";
+import { useDispatch } from "react-redux";
+import {
+  strengthColor,
+  strengthIndicator,
+} from "../../../../utils/password-strength";
 import { setUserAccount } from "../../../../services/redux/slices/user/userAccountSlice";
 import { auth } from "../../../../utils/auth_helper";
 import { signUp } from "../../../../services/api/user/api-auth";
+import { signUpUserWithEmailAndPassword } from "../../../../services/firebase/config/firebase-auth";
 
 export const AuthRegister = () => {
   const theme = useTheme();
@@ -87,23 +91,25 @@ export const AuthRegister = () => {
 
   const signUpUser = async (user) => {
     try {
-      const signedUpUser = await signUp(user); // soko with bugs
+      const signedUpUser = await signUpUserWithEmailAndPassword(
+        user.email,
+        user.password,
+        user.name.first + " " + user.name.last,
+        "https://source.unsplash.com/random"
+      );
       // console.log("signedup: ", signedUpUser);
 
       if (signedUpUser) {
-        auth.authenticate(signedUpUser.token, () => {
-          dispatch(setUserAccount(signedUpUser));
-          setLoading(false);
+        setLoading(false);
 
-          // Check if there's a previous location in the state object
-          if (location.state && location.state.from) {
-            // Navigate back to the previous location
-            navigate(location.state.from);
-          } else {
-            // If there's no previous location, navigate to the user's dashboard
-            navigate("/", { replace: true });
-          }
-        });
+        // Check if there's a previous location in the state object
+        if (location.state && location.state.from) {
+          // Navigate back to the previous location
+          navigate(location.state.from);
+        } else {
+          // If there's no previous location, navigate to the user's dashboard
+          navigate("/", { replace: true });
+        }
       }
     } catch (error) {
       // const errorCode = error.code;

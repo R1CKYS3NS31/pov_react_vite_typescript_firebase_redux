@@ -48,7 +48,7 @@ export const AccountSetting = () => {
       const tel = data.get("tel");
       const description = data.get("description");
       const seller = !!data.get("seller");
-      // const photoUrl = data.get("photoUrl");
+      // const displayPicture = data.get("displayPicture");
 
       // handle changes in input fields
       // const handleInputChange = (event) => {
@@ -75,7 +75,7 @@ export const AccountSetting = () => {
         description: description,
         seller: seller,
         tel: tel,
-        // photoUrl: photoUrl,
+        // displayPicture: displayPicture,
       };
       await updateUserHandle(user);
     } catch (error) {

@@ -10,7 +10,7 @@ import {
 const docName = "users";
 export const saveUserFirebase = async (user = {}) => {
   try {
-    const { name, email, photoUrl, isUser } = user;
+    const { name, email, displayPicture, isUser } = user;
 
     const userData = {
       name: {
@@ -19,7 +19,7 @@ export const saveUserFirebase = async (user = {}) => {
       },
       email: email,
       // password: password,
-      photoUrl: photoUrl,
+      displayPicture: displayPicture,
       isUser: isUser || true,
     };
     return await saveDocData(docName, "", userData);
@@ -30,7 +30,7 @@ export const saveUserFirebase = async (user = {}) => {
 
 export const setUserFirebase = async (user = {}) => {
   try {
-    const { uid, name, email, photoUrl, isUser } = user;
+    const { uid, name, email, displayPicture, isUser } = user;
 
     const userData = {
       name: {
@@ -39,7 +39,7 @@ export const setUserFirebase = async (user = {}) => {
       },
       email: email,
       // password: password,
-      photoUrl: photoUrl,
+      displayPicture: displayPicture,
       isUser: isUser || true,
     };
 

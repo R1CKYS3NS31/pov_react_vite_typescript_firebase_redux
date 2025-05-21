@@ -166,23 +166,23 @@ export const Chat = () => {
       const formData = new FormData(event.currentTarget);
       const formJson = Object.fromEntries(formData.entries());
 
-      // console.log(event.currentTarget.photoUrl.files[0]);
+      // console.log(event.currentTarget.displayPicture.files[0]);
 
-      const file = await event.currentTarget.photoUrl.files[0];
+      const file = await event.currentTarget.displayPicture.files[0];
       const chatDp = new FormData();
 
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setEditedChat({ ...editedChat, photoUrl: reader.result });
+          setEditedChat({ ...editedChat, displayPicture: reader.result });
         };
         reader.readAsDataURL(file);
 
         console.log("dp - ", file);
 
-        chatDp.append("photoUrl", file);
+        chatDp.append("displayPicture", file);
         // const chatDp = {
-        //   photoUrl: file,
+        //   displayPicture: file,
         // };
       }
 
@@ -194,7 +194,7 @@ export const Chat = () => {
           // createdBy: userAccount.user.uid, // not necccessary
           members: [...selectedMembers, userAccount.user.uid],
           description: formJson.description.trim(),
-          photoUrl: file,
+          displayPicture: file,
         };
 
         console.log("new chat - ", newChat);
@@ -332,12 +332,12 @@ export const Chat = () => {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setEditedChat({ ...editedChat, photoUrl: reader.result });
+      setEditedChat({ ...editedChat, displayPictureicture: reader.result });
     };
     reader.readAsDataURL(file);
 
     const chat = new FormData();
-    chat.append("photoUrl", file);
+    chat.append("displayPicture", file);
     if (selectedChat) {
       await updateChatHandle(chat);
     }
@@ -454,7 +454,7 @@ export const Chat = () => {
                 alignContent={"start"}
               >
                 <Grid2 item>
-                  <Avatar alt={chat.name} src={chat.photoUrl} />
+                  <Avatar alt={chat.name} src={chat.displayPicture} />
                 </Grid2>
                 <Grid2 item component={Stack} direction={"column"}>
                   <Grid2
@@ -539,7 +539,7 @@ export const Chat = () => {
                 component={Avatar}
                 variant="rounded"
                 sizes="small"
-                src={selectedChat.photoUrl}
+                src={selectedChat.displayPicture}
                 alt={selectedChat && selectedChat.name}
               />
               <Grid2 item size={{ xs: 9 }} component={Stack} spacing={1}>
@@ -631,7 +631,7 @@ export const Chat = () => {
                               justifyContent={"flex-start"}
                               alignItems={"center"}
                             >
-                              <Avatar src={message.sender.photoUrl} />
+                              <Avatar src={message.sender.displayPicture} />
                               <Typography variant="overline" noWrap>
                                 {message.sender.name.first +
                                   " " +

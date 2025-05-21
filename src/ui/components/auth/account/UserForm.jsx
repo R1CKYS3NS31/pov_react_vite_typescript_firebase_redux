@@ -24,7 +24,7 @@ export const UserForm = ({
   const [firstName, setFirstName] = useState(userAccount.name.first);
   const [lastName, setLastName] = useState(userAccount.name.last);
   const [description, setDescription] = useState(userAccount.description);
-  const [photoUrl, setPhotoUrl] = useState(userAccount.photoUrl);
+  const [displayPicture, setPhotoUrl] = useState(userAccount.displayPicture);
 
   useEffect(() => {
     if (firstName && lastName && email && tel && description) {
@@ -44,7 +44,7 @@ export const UserForm = ({
     reader.readAsDataURL(file);
 
     const user = new FormData();
-    user.append("photoUrl", file);
+    user.append("displayPicture", file);
     await updateUserHandle(user);
   };
 
@@ -56,11 +56,11 @@ export const UserForm = ({
             <Avatar
               variant="rounded"
               alt={firstName}
-              src={photoUrl}
+              src={displayPicture}
               sx={{ width: "100px", height: "100px" }}
             />
 
-            <label htmlFor="photoUrl">
+            <label htmlFor="displayPicture">
               <Button
                 variant="outlined"
                 component={"span"}
@@ -84,8 +84,8 @@ export const UserForm = ({
               accept="image/*"
               onChange={handleFileChange}
               style={{ display: "none" }}
-              id="photoUrl"
-              name="photoUrl"
+              id="displayPicture"
+              name="displayPicture"
             />
           </Stack>
         </Grid2>

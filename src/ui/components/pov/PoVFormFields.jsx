@@ -8,13 +8,13 @@ export const PoVFormFields = ({ editedPoV = {}, handleInputChange }) => {
         <Avatar
           variant="rounded"
           alt={editedPoV.title}
-          src={editedPoV.photoUrl}
+          src={editedPoV.displayPicture}
           sx={{ width: "150px", height: "150px" }}
         />
         <input
-          name="photoUrl"
-          id="photoUrl"
-          // value={editedPoV.photoUrl}
+          name="displayPicture"
+          id="displayPicture"
+          // value={editedPoV.displayPicture}
           // required
           type="file"
           autoFocus
@@ -22,7 +22,7 @@ export const PoVFormFields = ({ editedPoV = {}, handleInputChange }) => {
           style={{ display: "none" }}
           onChange={handleInputChange}
         />
-        <label htmlFor="photoUrl">
+        <label htmlFor="displayPicture">
           <Button
             variant="outlined"
             component={"span"}

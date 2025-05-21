@@ -89,7 +89,7 @@ export const Home = () => {
                     <Avatar
                       variant="rounded"
                       alt={pov.author.name.first}
-                      src={pov.author.photoUrl}
+                      src={pov.author.displayPicture}
                     />
                   </ListItemAvatar>
                   <ListItemText

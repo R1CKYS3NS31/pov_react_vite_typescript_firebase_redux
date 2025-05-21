@@ -31,11 +31,11 @@ export const ChatFormFields = ({
           <Avatar
             variant="rounded"
             alt={editedChat && editedChat.name}
-            src={editedChat && editedChat.photoUrl}
+            src={editedChat && editedChat.displayPicture}
             sx={{ width: "100px", height: "100px" }}
           />
 
-          <label htmlFor="photoUrl">
+          <label htmlFor="displayPicture">
             <Button
               variant="outlined"
               component={"span"}
@@ -59,8 +59,8 @@ export const ChatFormFields = ({
             accept="image/*"
             onChange={handleChatDPChange}
             style={{ display: "none" }}
-            id="photoUrl"
-            name="photoUrl"
+            id="displayPicture"
+            name="displayPicture"
           />
         </Stack>
       </Grid2>

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   Avatar,
@@ -28,6 +28,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOutUserAccount } from "../../../../../services/redux/slices/user/userAccountSlice";
 import { MainCard } from "../../cards/MainCard";
 import Transitions from "../../@extended/Transitions";
+import { currentUser } from "../../../../../services/firebase/config/firebase-auth";
+import { getUserFirebase } from "../../../../../services/firebase/controller/user-firebase";
 
 // const avatar1 = "/assets/users/user-round.svg";
 // tab panel wrapper
@@ -61,8 +63,30 @@ function a11yProps(index) {
 export const ProfileMenu = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const userAccount = useSelector((state) => state.userAccount);
+  // const userAccount = useSelector((state) => state.userAccount);
 
+  const [userAccount, setUserAccount] = useState({
+    exists: false,
+    uid: "",
+    name: { first: "", last: "" },
+  });
+
+  useEffect(() => {
+    const user = currentUser();
+    if (user) {
+      getUserFirebase(user.uid)
+        .then((userFirebase) => {
+          if (userFirebase.exists) {
+            setUserAccount(userFirebase);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, []);
+
+  
   const handleLogout = async () => {
     userAccount && auth.clearJWT(() => dispatch(signOutUserAccount()));
   };
@@ -105,7 +129,7 @@ export const ProfileMenu = () => {
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar
             alt={userAccount ? userAccount.user.name.first : "Guest"}
-            src={userAccount && userAccount.user.photoUrl}
+            src={userAccount && userAccount.user.displayPicture}
             sx={{ width: 32, height: 32 }}
           />
           <Typography variant="subtitle1">
@@ -167,7 +191,7 @@ export const ProfileMenu = () => {
                                   ? userAccount.user.name.first.toUpperCase()
                                   : "Guest"
                               }
-                              src={userAccount && userAccount.user.photoUrl}
+                              src={userAccount && userAccount.user.displayPicture}
                               sx={{ width: 32, height: 32 }}
                             />
                             <Stack>
