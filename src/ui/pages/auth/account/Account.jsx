@@ -14,79 +14,65 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
 import { MainCard } from "../../../components/ui/cards/MainCard";
 import { useEffect, useState } from "react";
-import {
-  addPoV,
-  setPovs,
-} from "../../../../services/redux/slices/pov/povSlice";
-import {
-  createPoV,
-  fetchPovsByOwner,
-} from "../../../../services/api/pov/api-pov";
 import { PoV } from "../../../components/pov/PoV";
-import { auth } from "../../../../utils/auth_helper";
 import { DialogForm } from "../../../components/ui/dialog/DialogForm";
 import { PoVFormFields } from "../../../components/pov/PoVFormFields";
-import { currentUser } from "../../../../services/firebase/config/firebase-auth";
+import { currentUser, isUserSignedIn } from "../../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../../services/firebase/controller/user-firebase";
+import { getPoVsByOwnerFirebase } from "../../../../services/firebase/controller/pov-firebase";
 
 export const Account = () => {
-  
-
-  
-
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [openPoVDialog, setOpenPoVDialog] = useState(false);
   const [openErrorSnackBar, setOpenErrorSnackBar] = useState(false);
 
-  const [povs, setPovs] = useState({ size: 0,
-    empty: true,
-    docs: [],})
+  const [povs, setPovs] = useState({ size: 0, empty: true, docs: [] });
   const [userAccount, setUserAccount] = useState({
-      exists: false,
-      uid: "",
-      name: { first: "", last: "" },
-    });
+    exists: false,
+    uid: "",
+    name: { first: "", last: "" },
+  });
+
+  useEffect(() => {
+    const user = currentUser();
+    console.log(currentUser());
+    
+    if (user) {
+      getUserFirebase(user.uid)
+        .then((userFirebase) => {
+                
+          if (userFirebase.exists) {
+            setUserAccount(userFirebase);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, []);
+
+  console.log(userAccount);
   
-    useEffect(() => {
-      const user = currentUser();
-      if (user) {
-        getUserFirebase(user.uid)
-          .then((userFirebase) => {
-            if (userFirebase.exists) {
-              setUserAccount(userFirebase);
-            }
+  useEffect(() => {
+    // setLoading(true);
+    if (isUserSignedIn) {
+          getPoVsByOwnerFirebase(userAccount.uid)
+          .then((ownersPoVsFetched) => {
+            setPovs(ownersPoVsFetched)
           })
           .catch((error) => {
-            console.error(error);
+            setError(error.message);
+            setOpenErrorSnackBar(true);
           });
+        // .finally(() => setLoading(false));
+      } else {
+        setError("Please sign-in");
+        setOpenErrorSnackBar(true);
       }
-    }, []);
-
-    
-
-  // useEffect(() => {
-  //   // setLoading(true);
-  //   auth.isAuthenticated().then((token) => {
-  //     if (token) {
-  //       fetchPovsByOwner(token)
-  //         .then((ownersPoVsFetched) => {
-  //           dispatch(setPovs(ownersPoVsFetched));
-  //         })
-  //         .catch((error) => {
-  //           setError(error);
-  //           setOpenErrorSnackBar(true);
-  //         });
-  //       // .finally(() => setLoading(false));
-  //     } else {
-  //       setError("Please sign-in");
-  //       setOpenErrorSnackBar(true);
-  //     }
-  //   });
-  // }, [dispatch]);
+  }, [userAccount]);
 
   const handleCloseErrorSnackBar = (event, reason) => {
     if (reason === "clickaway") {
@@ -112,13 +98,13 @@ export const Account = () => {
       const formJson = Object.fromEntries(formData.entries());
 
       let newPov;
-      const token = await auth.isAuthenticated();
-      if (token && userAccount.id) {
+      
+      if ( isUserSignedIn() && userAccount.uid) {
         newPov = {
           // id: new Date(),
           title: formJson.title,
           points: formJson.points,
-          author: userAccount.id,
+          author: userAccount.uid,
         };
 
         await createPoVHandle(newPov);
@@ -218,7 +204,7 @@ export const Account = () => {
             PoVs
           </Typography>
           <Grid2 container spacing={0.5}>
-            {povs ? (
+            {!povs.empty ? (
               povs.map((pov) => (
                 <Grid2 item size={{ xs: 12, md: 6 }} key={pov.id}>
                   <PoV pov={pov} />

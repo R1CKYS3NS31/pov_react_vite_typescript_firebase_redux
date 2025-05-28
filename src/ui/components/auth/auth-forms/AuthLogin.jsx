@@ -90,7 +90,8 @@ export const AuthLogin = () => {
       // alert(errorCode + " - " + errorMessage);
       // alert(error);
       setLoading(false);
-      setError(error);
+      console.log(error)
+      setError(error.message);
       setOpen(true);
     }
   };

@@ -6,6 +6,8 @@ import { Register } from "../pages/auth/signUp/Register";
 import { PrivateRoute } from "../components/private_route/PrivateRoute";
 import { Test } from "../pages/test/Test";
 import { MainLayout } from "../components/ui/layout/MainLayout";
+import { Account } from "../pages/auth/account/Account";
+import { AccountSetting } from "../pages/auth/account/AccountSetting";
 
 export const Routes = () => {
   return useRoutes([
@@ -22,30 +24,30 @@ export const Routes = () => {
         //   ),
         // },
         // { path: "profile/:userId", element: <Profile /> },
-        // {
-        //   path: "account",
-        //   children: [
-        //     { element: <Navigate to="account/account" />, index: "true" },
-        //     {
-        //       path: "account",
-        //       element: (
-        //         <PrivateRoute
-        //           component={Account}
-        //           rest={{ location: "/account" }}
-        //         />
-        //       ),
-        //     },
-        //     {
-        //       path: "setting",
-        //       element: (
-        //         <PrivateRoute
-        //           component={AccountSetting}
-        //           rest={{ location: "/account/setting" }}
-        //         />
-        //       ),
-        //     },
-        //   ],
-        // },
+        {
+          path: "account",
+          children: [
+            { element: <Navigate to="account/account" />, index: "true" },
+            {
+              path: "account",
+              element: (
+                <PrivateRoute
+                  component={Account}
+                  rest={{ location: "/account" }}
+                />
+              ),
+            },
+            {
+              path: "setting",
+              element: (
+                <PrivateRoute
+                  component={AccountSetting}
+                  rest={{ location: "/account/setting" }}
+                />
+              ),
+            },
+          ],
+        },
         { path: "test", element: <Test /> },
         { path: "404", element: <Page404 /> },
         { path: "*", element: <Navigate to="/404" replace /> },

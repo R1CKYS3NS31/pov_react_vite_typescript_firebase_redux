@@ -125,13 +125,13 @@ export const ProfileMenu = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar
-            alt={userAccount ? userAccount.user.name.first : "Guest"}
-            src={userAccount && userAccount.user.displayPicture}
+            alt={userAccount ? userAccount.name.first : "Guest"}
+            src={userAccount && userAccount.displayPicture}
             sx={{ width: 32, height: 32 }}
           />
           <Typography variant="subtitle1">
             {userAccount
-              ? userAccount.user.name.first + " " + userAccount.user.name.last
+              ? userAccount.name.first + " " + userAccount.name.last
               : "Guest"}
           </Typography>
         </Stack>
@@ -185,11 +185,11 @@ export const ProfileMenu = () => {
                             <Avatar
                               alt={
                                 userAccount
-                                  ? userAccount.user.name.first.toUpperCase()
+                                  ? userAccount.name.first.toUpperCase()
                                   : "Guest"
                               }
                               src={
-                                userAccount && userAccount.user.displayPicture
+                                userAccount && userAccount.displayPicture
                               }
                               sx={{ width: 32, height: 32 }}
                             />
@@ -199,9 +199,9 @@ export const ProfileMenu = () => {
                                 textTransform={"capitalize"}
                               >
                                 {userAccount
-                                  ? userAccount.user.name.first +
+                                  ? userAccount.name.first +
                                     " " +
-                                    userAccount.user.name.last
+                                    userAccount.name.last
                                   : "Guest"}
                               </Typography>
                               <Typography variant="body2" color="textSecondary">

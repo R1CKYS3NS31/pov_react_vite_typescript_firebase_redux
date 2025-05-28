@@ -113,7 +113,7 @@ export const AuthRegister = () => {
       // alert(errorCode + " - " + errorMessage);
       // alert(error)
       setLoading(false);
-      setError(`* ${error}`);
+      setError(error.message);
       setOpen(true);
     }
   };

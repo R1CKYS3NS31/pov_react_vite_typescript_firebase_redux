@@ -187,8 +187,8 @@
 //       if (token) {
 //         newChat = {
 //           name: formJson.name.trim(),
-//           // createdBy: userAccount.user.uid, // not necccessary
-//           members: [...selectedMembers, userAccount.user.uid],
+//           // createdBy: userAccount.uid, // not necccessary
+//           members: [...selectedMembers, userAccount.uid],
 //           description: formJson.description.trim(),
 //           displayPicture: file,
 //         };
@@ -251,7 +251,7 @@
 //             sentAt: new Date().toISOString(),
 //             reciever: selectedChat.members.filter(
 //               // todo: private receivers in a chat
-//               (member) => member !== userAccount.user.uid
+//               (member) => member !== userAccount.uid
 //             ),
 
 //             chat: selectedChat,
@@ -602,21 +602,21 @@
 //                           borderRadius: "8px",
 //                           maxWidth: "75%",
 //                           bgcolor:
-//                             message.sender.uid === userAccount.user.uid
+//                             message.sender.uid === userAccount.uid
 //                               ? "primary.light"
 //                               : "secondary.dark", // if sender === auth user
 //                           color:
-//                             message.sender.uid === userAccount.user.uid
+//                             message.sender.uid === userAccount.uid
 //                               ? "primary.contrastText"
 //                               : "secondary.contrastText",
 //                           ml:
-//                             message.sender.uid === userAccount.user.uid
+//                             message.sender.uid === userAccount.uid
 //                               ? "auto"
 //                               : "0",
 //                         }}
 //                       >
 //                         <Stack direction={"column"} spacing={1}>
-//                           {message.sender.uid === userAccount.user.uid ? (
+//                           {message.sender.uid === userAccount.uid ? (
 //                             <Typography variant="overline" noWrap>
 //                               You
 //                             </Typography>

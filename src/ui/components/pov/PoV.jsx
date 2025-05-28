@@ -29,10 +29,12 @@ import { Link } from "react-router-dom";
 import { formatNumber } from "../../../utils/formatNumber";
 import { DialogDelete} from "../ui/dialog/DialogDelete";
 import { DialogCommentPoV } from "../ui/dialog/DialogCommentPoV";
+import { currentUser } from "../../../services/firebase/config/firebase-auth";
+import { getUserFirebase } from "../../../services/firebase/controller/user-firebase";
 
 export const PoV = ({ pov }) => {
 
-  const userAccount = useSelector((state) => state.userAccount);
+
 
   const [editedPoV, setEditedPoV] = useState(pov);
   const [speedActions, setSpeedActions] = useState([
@@ -41,11 +43,32 @@ export const PoV = ({ pov }) => {
     { icon: <Comment />, name: "Comment" },
   ]);
 
+  const [userAccount, setUserAccount] = useState({
+    exists: false,
+    uid: "",
+    name: { first: "", last: "" },
+  });
+
+  useEffect(() => {
+    const user = currentUser();
+    if (user) {
+      getUserFirebase(user.uid)
+        .then((userFirebase) => {
+          if (userFirebase.exists) {
+            setUserAccount(userFirebase);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, []);
+
   useEffect(() => {
     const likeFound = pov.likes.find(
-      (like) => userAccount && userAccount.user.uid=== like
+      (like) => userAccount && userAccount.uid=== like
     );
-    userAccount && userAccount.user.uid=== pov.author.id
+    userAccount && userAccount.uid=== pov.author.id
       ? setSpeedActions([
           {
             icon: <DeleteSweep />,
@@ -130,7 +153,7 @@ export const PoV = ({ pov }) => {
   const handleLike = async () => {
     // const token = await auth.isAuthenticated();
     // if (token) {
-    //   const likeFound = pov.likes.find((like) => like === userAccount.user.uid);
+    //   const likeFound = pov.likes.find((like) => like === userAccount.uid);
     //   // console.log("like found ", likeFound);
     //   if (likeFound) {
     //     // console.log("clicked to unlike");
