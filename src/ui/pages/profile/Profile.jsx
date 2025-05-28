@@ -19,7 +19,7 @@ import { PoV } from "../../components/pov/PoV";
 import { useParams } from "react-router-dom";
 import { isUserSignedIn } from "../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../services/firebase/controller/user-firebase";
-import { getPoVsByOwnerFirebase } from "../../../../services/firebase/controller/pov-firebase";
+import { getPoVsByOwnerFirebase } from "../../../services/firebase/controller/pov-firebase";
 
 export const Profile = () => {
 

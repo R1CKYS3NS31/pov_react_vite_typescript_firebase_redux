@@ -8,6 +8,8 @@ import { Test } from "../pages/test/Test";
 import { MainLayout } from "../components/ui/layout/MainLayout";
 import { Account } from "../pages/auth/account/Account";
 import { AccountSetting } from "../pages/auth/account/AccountSetting";
+import { Chat } from "../pages/chat/Chat";
+import { Profile } from "../pages/profile/Profile";
 
 export const Routes = () => {
   return useRoutes([
@@ -17,13 +19,13 @@ export const Routes = () => {
       children: [
         { element: <Navigate to="/home" />, index: true },
         { path: "home", element: <Home /> },
-        // {
-        //   path: "chat",
-        //   element: (
-        //     <PrivateRoute component={Chat} rest={{ location: "/chat" }} />
-        //   ),
-        // },
-        // { path: "profile/:userId", element: <Profile /> },
+        {
+          path: "chat",
+          element: (
+            <PrivateRoute component={Chat} rest={{ location: "/chat" }} />
+          ),
+        },
+        { path: "profile/:userId", element: <Profile /> },
         {
           path: "account",
           children: [
