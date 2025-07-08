@@ -96,7 +96,7 @@ export const AuthRegister = () => {
         // console.log("signed up user to save ",signedUpUser) remove
         if (signedUpUser) {
           saveUserFirebase({
-            uid: signedUpUser.uid,
+            id: signedUpUser.uid,
             displayName: signedUpUser.displayName,
             email: signedUpUser.email,
             displayPicture:signedUpUser.photoURL,

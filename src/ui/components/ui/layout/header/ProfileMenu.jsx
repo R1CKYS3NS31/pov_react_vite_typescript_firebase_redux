@@ -75,7 +75,7 @@ export const ProfileMenu = () => {
       getUserFirebase(user.uid)
         .then((userFirebase) => {
           if (userFirebase.exists) {
-            co
+
             setUserAccount(userFirebase);
           }
         })

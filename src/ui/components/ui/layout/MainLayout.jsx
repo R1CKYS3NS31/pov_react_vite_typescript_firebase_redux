@@ -1,4 +1,4 @@
-import { Chat, Favorite, Home, Person3 } from "@mui/icons-material";
+import { Favorite, Home, Person3 } from "@mui/icons-material";
 import {
   AppBar,
   BottomNavigation,
@@ -20,8 +20,8 @@ export const MainLayout = () => {
   const handleChange = (event, newValue) => {
     // ricky has bugs: onclick
     event.preventDefault();
-    // console.log(event.target.value);
-    console.log(newValue);
+    // console.log(event.target.value); // remove
+    // console.log(newValue); // remove
     setValue(newValue);
     navigate(`/${newValue}`, { replace: true });
   };
@@ -59,7 +59,7 @@ export const MainLayout = () => {
             value="favorites"
             icon={<Favorite />}
           />
-          <BottomNavigationAction label="Chat" value="chat" icon={<Chat />} />
+          {/* <BottomNavigationAction label="Chat" value="chat" icon={<Chat />} /> */}
           <BottomNavigationAction
             label="Account"
             value="account/account"
