@@ -1,8 +1,11 @@
-// mui
 import { useTheme } from "@emotion/react";
-import { Divider, Grid2, Stack, Typography, useMediaQuery } from "@mui/material";
-
-// project mports
+import {
+  Divider,
+  Grid2,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import {
   AuthCardWrapper,
   AuthWrapper,

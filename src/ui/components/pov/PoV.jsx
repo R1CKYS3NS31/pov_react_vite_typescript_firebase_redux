@@ -27,15 +27,13 @@ import { DialogForm } from "../ui/dialog/DialogForm";
 import { PoVFormFields } from "./PoVFormFields";
 import { Link } from "react-router-dom";
 import { formatNumber } from "../../../utils/formatNumber";
-import { DialogDelete} from "../ui/dialog/DialogDelete";
+import { DialogDelete } from "../ui/dialog/DialogDelete";
 import { DialogCommentPoV } from "../ui/dialog/DialogCommentPoV";
 import { currentUser } from "../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../services/firebase/controller/user-firebase";
+import { ErrorSnackbar } from "../ui/snackbar/ErrorSnackbar";
 
 export const PoV = ({ pov }) => {
-
-
-
   const [editedPoV, setEditedPoV] = useState(pov);
   const [speedActions, setSpeedActions] = useState([
     { icon: <FileCopy />, name: "Copy" },
@@ -66,9 +64,9 @@ export const PoV = ({ pov }) => {
 
   useEffect(() => {
     const likeFound = pov.likes.find(
-      (like) => userAccount && userAccount.uid=== like
+      (like) => userAccount && userAccount.uid === like
     );
-    userAccount && userAccount.uid=== pov.author.id
+    userAccount && userAccount.uid === pov.author.id
       ? setSpeedActions([
           {
             icon: <DeleteSweep />,
@@ -348,7 +346,10 @@ export const PoV = ({ pov }) => {
         <Stack direction={"row"} justifyContent={"space-between"}>
           <Stack direction={"row"} spacing={1}>
             <Link to={`/profile/${pov.author.id}`}>
-              <Avatar src={pov.author.displayPicture} alt={pov.author.name.first} />{" "}
+              <Avatar
+                src={pov.author.displayPicture}
+                alt={pov.author.name.first}
+              />{" "}
             </Link>
             <Stack>
               <Typography
@@ -435,24 +436,11 @@ export const PoV = ({ pov }) => {
         handleSubmit={handleCommentPoV}
         pov={pov}
       />
-
-      <Snackbar
-        open={openErrorSnackBar}
-        autoHideDuration={10000}
-        onClose={handleCloseErrorSnackBar}
-        anchorOrigin={{ horizontal: "right", vertical: "top" }}
-      >
-        <Alert
-          // title="Error"
-          onClose={handleCloseErrorSnackBar}
-          severity="error"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          <AlertTitle>Error</AlertTitle>
-          {error}
-        </Alert>
-      </Snackbar>
+      <ErrorSnackbar
+        openErrorSnackBar={openErrorSnackBar}
+        handleCloseErrorSnackBar={handleCloseErrorSnackBar}
+        error={error}
+      />
     </Stack>
   );
 };

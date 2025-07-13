@@ -17,7 +17,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-export const ProfileTab = ({ handleLogout, userAccount }) => {
+export const ProfileTab = ({ handleLogout }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -67,17 +67,6 @@ export const ProfileTab = ({ handleLogout, userAccount }) => {
         </ListItemIcon>
         <ListItemText primary="Sign Up" />
       </ListItemButton>
-      {/* <ListItemButton disabled={!userAccount || !userAccount.seller}
-        selected={selectedIndex === 'business'}
-        onClick={(event) => handleListItemClick(event, 'business')}
-        
-      >
-        <ListItemIcon>
-          <AutoGraphOutlined />
-        </ListItemIcon>
-        <ListItemText primary="Business" />
-      </ListItemButton> */}
-
       <ListItemButton
         selected={selectedIndex === "logout"}
         onClick={handleLogout}
@@ -89,8 +78,4 @@ export const ProfileTab = ({ handleLogout, userAccount }) => {
       </ListItemButton>
     </List>
   );
-};
-
-ProfileTab.propTypes = {
-  handleLogout: PropTypes.func,
 };

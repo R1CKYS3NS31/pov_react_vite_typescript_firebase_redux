@@ -19,12 +19,6 @@ export const Routes = () => {
       children: [
         { element: <Navigate to="/home" />, index: true },
         { path: "home", element: <Home /> },
-        // {
-        //   path: "chat",
-        //   element: (
-        //     <PrivateRoute component={Chat} rest={{ location: "/chat" }} />
-        //   ),
-        // },
         { path: "profile/:userId", element: <Profile /> },
         {
           path: "account",
@@ -55,8 +49,6 @@ export const Routes = () => {
         { path: "*", element: <Navigate to="/404" replace /> },
       ],
     },
-    // { path: "pov/create", element: <PrivateRoute component={CreatePoV} /> },
-    // { path: "pov/edit/:povId", element: <PovEdit /> },
     { path: "signin", element: <Login /> },
     { path: "signup", element: <Register /> },
 

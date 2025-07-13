@@ -61,14 +61,6 @@ export const getPoVFirebase = async (povId) => {
   }
 };
 
-// export const getPoVByAuthorFirebase = async (userId, povId) => {
-//   try {
-//     return await loadDocDataById(docName, userId, povId); // todo: match author's pov
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
 export const updatePoVFirebase = async (povId, pov) => {
   try {
     const { title, points, author } = pov;

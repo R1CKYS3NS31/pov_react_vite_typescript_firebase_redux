@@ -108,7 +108,6 @@ export const PasswordForm = ({
             }}
             autoComplete="new-password"
             endadornment={
-              // soko with bugs
               <InputAdornment position="end">
                 <IconButton
                   aria-label="toggle password visibility"

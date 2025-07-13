@@ -1,7 +1,5 @@
 import { AddReaction, EmailOutlined, PhoneOutlined } from "@mui/icons-material";
 import {
-  Alert,
-  AlertTitle,
   Avatar,
   Divider,
   Fab,
@@ -10,7 +8,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
@@ -28,9 +25,9 @@ import {
   getPoVsByAuthorFirebase,
   savePoVFirebase,
 } from "../../../../services/firebase/controller/pov-firebase";
+import { ErrorSnackbar } from "../../../components/ui/snackbar/ErrorSnackbar";
 
 export const Account = () => {
-  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [openPoVDialog, setOpenPoVDialog] = useState(false);
   const [openErrorSnackBar, setOpenErrorSnackBar] = useState(false);
@@ -44,13 +41,9 @@ export const Account = () => {
 
   useEffect(() => {
     const user = currentUser();
-    // console.log("current user - ", user);
-
-    if (user && isUserSignedIn()) {
+      if (user && isUserSignedIn()) {
       getUserFirebase(user.uid)
         .then((userFirebase) => {
-          // console.log("user account", userFirebase); // remove
-
           if (userFirebase.exists) {
             setUserAccount(userFirebase);
           }
@@ -62,7 +55,6 @@ export const Account = () => {
   }, []);
 
   useEffect(() => {
-    // setLoading(true);
     if (isUserSignedIn) {
       getPoVsByAuthorFirebase(userAccount.uid)
         .then((authorsPoVsFetched) => {
@@ -74,7 +66,6 @@ export const Account = () => {
           setError(error.message);
           setOpenErrorSnackBar(true);
         });
-      // .finally(() => setLoading(false));
     } else {
       setError("Please sign-in");
       setOpenErrorSnackBar(true);
@@ -254,23 +245,11 @@ export const Account = () => {
           handleSubmit={handleSubmitPoV}
           fields={<PoVFormFields />} // todo: implement the dependencies
         />
-        <Snackbar
-          open={openErrorSnackBar}
-          autoHideDuration={10000}
-          onClose={handleCloseErrorSnackBar}
-          anchorOrigin={{ horizontal: "right", vertical: "top" }}
-        >
-          <Alert
-            // title="Error"
-            onClose={handleCloseErrorSnackBar}
-            severity="error"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            <AlertTitle>Error</AlertTitle>
-            {error}
-          </Alert>
-        </Snackbar>
+         <ErrorSnackbar
+                openErrorSnackBar={openErrorSnackBar}
+                handleCloseErrorSnackBar={handleCloseErrorSnackBar}
+                error={error}
+              />
       </Grid2>
     </MainCard>
   );

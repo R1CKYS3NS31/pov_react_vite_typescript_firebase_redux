@@ -1,7 +1,5 @@
 import { EmailOutlined, PhoneOutlined } from "@mui/icons-material";
 import {
-  Alert,
-  AlertTitle,
   Avatar,
   Divider,
   Grid2,
@@ -9,7 +7,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
@@ -20,6 +17,7 @@ import { useParams } from "react-router-dom";
 import { isUserSignedIn } from "../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../services/firebase/controller/user-firebase";
 import { getPoVsByAuthorFirebase } from "../../../services/firebase/controller/pov-firebase";
+import { ErrorSnackbar } from "../../components/ui/snackbar/ErrorSnackbar";
 
 export const Profile = () => {
 
@@ -149,23 +147,11 @@ export const Profile = () => {
             )}
           </Grid2>
         </Grid2>
-        <Snackbar
-          open={openErrorSnackBar}
-          autoHideDuration={10000}
-          onClose={handleCloseErrorSnackBar}
-          anchorOrigin={{ horizontal: "right", vertical: "top" }}
-        >
-          <Alert
-            // title="Error"
-            onClose={handleCloseErrorSnackBar}
-            severity="error"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            <AlertTitle>Error</AlertTitle>
-            {error}
-          </Alert>
-        </Snackbar>
+        <ErrorSnackbar
+               openErrorSnackBar={openErrorSnackBar}
+               handleCloseErrorSnackBar={handleCloseErrorSnackBar}
+               error={error}
+             />
       </Grid2>
     </MainCard>
   );

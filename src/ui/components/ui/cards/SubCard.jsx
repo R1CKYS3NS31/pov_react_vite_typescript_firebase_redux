@@ -1,8 +1,6 @@
 import { useTheme } from '@emotion/react'
 import { Card, CardContent, CardHeader, Divider, Typography } from '@mui/material'
-import React, { forwardRef } from 'react'
-import PropTypes from 'prop-types';
-
+import { forwardRef } from 'react'
 
 export const SubCard = forwardRef(
     (
@@ -81,18 +79,3 @@ export const SubCard = forwardRef(
         )
     }
 )
-
-SubCard.propTypes = {
-    children: PropTypes.node,
-    content: PropTypes.bool,
-    contentClass: PropTypes.string,
-    darkTitle: PropTypes.bool,
-    secondary: PropTypes.oneOfType([PropTypes.node, PropTypes.string, PropTypes.object]),
-    sx: PropTypes.object,
-    contentSX: PropTypes.object,
-    title: PropTypes.oneOfType([PropTypes.node, PropTypes.string, PropTypes.object])
-};
-
-SubCard.defaultProps = {
-    content: true
-};

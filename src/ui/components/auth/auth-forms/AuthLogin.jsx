@@ -1,7 +1,4 @@
-import { useTheme } from "@emotion/react";
 import {
-  Alert,
-  AlertTitle,
   Avatar,
   Box,
   Button,
@@ -9,38 +6,31 @@ import {
   FormHelperText,
   Grid2,
   IconButton,
-  Snackbar,
+  InputAdornment,
   TextField,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LockPersonOutlined,
-  Visibility,
-  VisibilityOff,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
-import {
-  isUserSignedIn,
-  signInUserWithEmailAndPassword,
-} from "../../../../services/firebase/config/firebase-auth";
+import { signInUserWithEmailAndPassword } from "../../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../../services/firebase/controller/user-firebase";
+import { ErrorSnackbar } from "../../ui/snackbar/ErrorSnackbar";
 
 export const AuthLogin = () => {
-  const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
-
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
+  const [openErrorSnackBar, setOpen] = useState(false);
 
   useEffect(() => {
     if (email && password) {
@@ -51,7 +41,7 @@ export const AuthLogin = () => {
     }
   }, [email, password]);
 
-  const handleClose = (event, reason) => {
+  const handleCloseErrorSnackBar = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -71,13 +61,13 @@ export const AuthLogin = () => {
     await signInUserWithEmailAndPassword(await user.email, await user.password)
       .then((signedInUser) => {
         // console.log(signedInUser); remove
-        
+
         if (signedInUser) {
           const { uid, accessToken } = signedInUser;
           getUserFirebase(uid)
             .then((userFirebase) => {
               // console.log(userFirebase); remove
-              
+
               if (userFirebase.uid && accessToken) {
                 setLoading(false);
                 // Check if there's a previous location in the state object
@@ -96,12 +86,7 @@ export const AuthLogin = () => {
         }
       })
       .catch((error) => {
-        // const errorCode = error.code;
-        // const errorMessage = error.message;
-        // alert(errorCode + " - " + errorMessage);
-        // alert(error);
         setLoading(false);
-        console.log(error);
         setError(error.message);
         setOpen(true);
       });
@@ -119,11 +104,6 @@ export const AuthLogin = () => {
       password: password,
     };
     signInUser(user);
-
-    // console.log({
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
   };
 
   return (
@@ -167,8 +147,8 @@ export const AuthLogin = () => {
             type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
-            InputProps={{
-              endAdornment: (
+            endadornment={
+              <InputAdornment position="end">
                 <IconButton
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
@@ -176,10 +156,14 @@ export const AuthLogin = () => {
                   edge="end"
                   size="large"
                 >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                  {showPassword ? (
+                    <VisibilityOutlined />
+                  ) : (
+                    <VisibilityOffOutlined />
+                  )}
                 </IconButton>
-              ),
-            }}
+              </InputAdornment>
+            }
           />
           <FormHelperText
             sx={{
@@ -188,17 +172,6 @@ export const AuthLogin = () => {
           >
             {error}
           </FormHelperText>
-          {/* <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked}
-                onChange={(event) => setChecked(event.target.checked)}
-                name="remember"
-                color="primary"
-              />
-            }
-            label="Remember me"
-          /> */}
           <Button
             type="submit"
             fullWidth
@@ -226,23 +199,11 @@ export const AuthLogin = () => {
           </Grid2>
         </Box>
       </Box>
-      <Snackbar
-        open={open}
-        autoHideDuration={10000}
-        onClose={handleClose}
-        anchorOrigin={{ horizontal: "right", vertical: "top" }}
-      >
-        <Alert
-          // title="Error"
-          onClose={handleClose}
-          severity="error"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          <AlertTitle>Error</AlertTitle>
-          {error}
-        </Alert>
-      </Snackbar>
+      <ErrorSnackbar
+        openErrorSnackBar={openErrorSnackBar}
+        handleCloseErrorSnackBar={handleCloseErrorSnackBar}
+        error={error}
+      />
     </>
   );
 };

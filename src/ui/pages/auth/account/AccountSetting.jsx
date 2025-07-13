@@ -13,13 +13,14 @@ import {
   getUserFirebase,
   updateUserFirebase,
 } from "../../../../services/firebase/controller/user-firebase";
+import { ErrorSnackbar } from "../../../components/ui/snackbar/ErrorSnackbar";
 
 export const AccountSetting = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
+  const [openErrorSnackBar, setOpen] = useState(false);
   const [errorPassword, setErrorPassword] = useState("");
 
   const [userAccount, setUserAccount] = useState({
@@ -47,7 +48,7 @@ export const AccountSetting = () => {
     !userAccount.exists && navigate("/signin");
   }, [userAccount, navigate]);
 
-  const handleClose = (event, reason) => {
+  const handleCloseErrorSnackBar = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -184,23 +185,11 @@ export const AccountSetting = () => {
           </SubCard>
         </Grid2>
       </Grid2>
-      <Snackbar
-        open={open}
-        autoHideDuration={10000}
-        onClose={handleClose}
-        anchorOrigin={{ horizontal: "right", vertical: "top" }}
-      >
-        <Alert
-          // title="Error"
-          onClose={handleClose}
-          severity="error"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          <AlertTitle>Error</AlertTitle>
-          {error}
-        </Alert>
-      </Snackbar>
+      <ErrorSnackbar
+        openErrorSnackBar={openErrorSnackBar}
+        handleCloseErrorSnackBar={handleCloseErrorSnackBar}
+        error={error}
+      />
     </MainCard>
   );
 };

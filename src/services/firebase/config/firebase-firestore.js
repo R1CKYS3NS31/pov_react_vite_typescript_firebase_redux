@@ -7,7 +7,6 @@ import {
   getDocs,
   getFirestore,
   limit,
-  onSnapshot,
   orderBy,
   query,
   setDoc,

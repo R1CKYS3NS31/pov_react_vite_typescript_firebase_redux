@@ -1,5 +1,4 @@
 import { Alert, AlertTitle, Snackbar } from "@mui/material";
-import React from "react";
 
 export const ErrorSnackbar = ({
   openErrorSnackBar,

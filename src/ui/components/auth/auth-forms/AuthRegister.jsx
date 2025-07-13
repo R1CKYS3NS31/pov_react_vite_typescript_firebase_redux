@@ -1,7 +1,4 @@
-import { useTheme } from "@emotion/react";
 import {
-  Alert,
-  AlertTitle,
   Avatar,
   Box,
   Button,
@@ -13,16 +10,14 @@ import {
   Grid2,
   IconButton,
   InputAdornment,
-  Snackbar,
   TextField,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
-import React, { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LockPersonOutlined,
-  Visibility,
-  VisibilityOff,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -30,12 +25,10 @@ import {
   strengthIndicator,
 } from "../../../../utils/password-strength";
 import { signUpUserWithEmailAndPassword } from "../../../../services/firebase/config/firebase-auth";
-import { saveUserFirebase, setUserFirebase } from "../../../../services/firebase/controller/user-firebase";
+import { setUserFirebase } from "../../../../services/firebase/controller/user-firebase";
+import { ErrorSnackbar } from "../../ui/snackbar/ErrorSnackbar";
 
 export const AuthRegister = () => {
-  const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -52,7 +45,7 @@ export const AuthRegister = () => {
   const [lastName, setLastName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
+  const [openErrorSnackBar, setOpen] = useState(false);
 
   useEffect(() => {
     if (firstName && lastName && email && password && checked) {
@@ -66,7 +59,7 @@ export const AuthRegister = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleClose = (event, reason) => {
+  const handleCloseErrorSnackBar = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -99,9 +92,8 @@ export const AuthRegister = () => {
             uid: signedUpUser.uid,
             displayName: signedUpUser.displayName,
             email: signedUpUser.email,
-            displayPicture:signedUpUser.photoURL,
+            displayPicture: signedUpUser.photoURL,
             name: user.name,
-
           })
             .then((savedUserFirebase) => {
               // console.log(savedUserFirebase); // remove
@@ -122,10 +114,6 @@ export const AuthRegister = () => {
         }
       })
       .catch((error) => {
-        // const errorCode = error.code;
-        // const errorMessage = error.message;
-        // alert(errorCode + " - " + errorMessage);
-        // alert(error)
         setLoading(false);
         setError(error.message);
         setOpen(true);
@@ -173,7 +161,6 @@ export const AuthRegister = () => {
         </Avatar>
 
         <form onSubmit={handleSubmit}>
-          {/* <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}> */}
           <Grid2 container spacing={2} sx={{ mt: 1 }}>
             <Grid2 item xs={12} sm={6}>
               <TextField
@@ -227,8 +214,8 @@ export const AuthRegister = () => {
                   changePassword(e.target.value);
                 }}
                 autoComplete="new-password"
-                InputProps={{
-                  endAdornment: (
+                endadornment={
+                  <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={handleClickShowPassword}
@@ -236,10 +223,14 @@ export const AuthRegister = () => {
                       edge="end"
                       size="large"
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showPassword ? (
+                        <VisibilityOutlined />
+                      ) : (
+                        <VisibilityOffOutlined />
+                      )}
                     </IconButton>
-                  ),
-                }}
+                  </InputAdornment>
+                }
               />
 
               {strength !== 0 && (
@@ -309,23 +300,11 @@ export const AuthRegister = () => {
           {/* </Box> */}
         </form>
       </Box>
-      <Snackbar
-        open={open}
-        autoHideDuration={10000}
-        onClose={handleClose}
-        anchorOrigin={{ horizontal: "right", vertical: "top" }}
-      >
-        <Alert
-          // title="Error"
-          onClose={handleClose}
-          severity="error"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          <AlertTitle>Error</AlertTitle>
-          {error}
-        </Alert>
-      </Snackbar>
+      <ErrorSnackbar
+        openErrorSnackBar={openErrorSnackBar}
+        handleCloseErrorSnackBar={handleCloseErrorSnackBar}
+        error={error}
+      />
     </>
   );
 };

@@ -9,7 +9,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ProfileMenu } from "./header/ProfileMenu";
 
@@ -20,8 +20,6 @@ export const MainLayout = () => {
   const handleChange = (event, newValue) => {
     // ricky has bugs: onclick
     event.preventDefault();
-    // console.log(event.target.value); // remove
-    // console.log(newValue); // remove
     setValue(newValue);
     navigate(`/${newValue}`, { replace: true });
   };
@@ -59,7 +57,6 @@ export const MainLayout = () => {
             value="favorites"
             icon={<Favorite />}
           />
-          {/* <BottomNavigationAction label="Chat" value="chat" icon={<Chat />} /> */}
           <BottomNavigationAction
             label="Account"
             value="account/account"

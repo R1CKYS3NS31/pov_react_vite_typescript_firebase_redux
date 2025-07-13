@@ -19,12 +19,14 @@ export const DialogDelete = ({
   handleCloseDeleteDialog,
   handleDelete,
   title,
-  content
+  content,
 }) => {
   return (
     <Dialog
       open={openDeleteDialog}
-      TransitionComponent={Transition}
+      slots={{
+        transition: Transition,
+      }}
       keepMounted
       onClose={handleCloseDeleteDialog}
       aria-describedby="alert-dialog-slide-description"

@@ -59,7 +59,6 @@ export const UserForm = ({
               src={displayPicture}
               sx={{ width: "100px", height: "100px" }}
             />
-
             <label htmlFor="displayPicture">
               <Button
                 variant="outlined"
@@ -167,7 +166,6 @@ export const UserForm = ({
             helperText="user description or about"
           />
         </Grid2>
-
         <Grid2 item size={{ xs: 12 }}>
           <FormHelperText
             component={Typography}

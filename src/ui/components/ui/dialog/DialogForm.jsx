@@ -19,9 +19,11 @@ export const DialogForm = ({
     <Dialog
       open={open}
       onClose={handleClose}
-      PaperProps={{
-        component: "form",
-        onSubmit: handleSubmit,
+      slotProps={{
+        paper: {
+          component: "form",
+          onSubmit: handleSubmit,
+        },
       }}
     >
       <DialogTitle variant="h2">{title}</DialogTitle>

@@ -20,9 +20,11 @@ export const DialogCommentPoV = ({ open, handleClose, handleSubmit, pov }) => {
     <Dialog
       open={open}
       onClose={handleClose}
-      PaperProps={{
-        component: "form",
-        onSubmit: handleSubmit,
+      slotProps={{
+        paper: {
+          component: "form",
+          onSubmit: handleSubmit,
+        },
       }}
     >
       <DialogTitle variant="h2">Comment</DialogTitle>
@@ -31,12 +33,6 @@ export const DialogCommentPoV = ({ open, handleClose, handleSubmit, pov }) => {
           Comment on '{pov.title}' PoV
         </DialogContentText>
         <Grid2 container spacing={1} direction={"row"}>
-          {/* <Grid2 item size={{ xs: 12, lg: 6 }}>
-            <PoV pov={pov} />
-          </Grid2> */}
-          {/* <Grid2 item size={{ xs: 1 }}>
-            <Divider variant="middle" orientation="vertical" title="PoV" />
-          </Grid2> */}
           <Grid2
             item
             container
