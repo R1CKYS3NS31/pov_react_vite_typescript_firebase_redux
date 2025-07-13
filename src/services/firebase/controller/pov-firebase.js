@@ -11,12 +11,12 @@ const docName = "povs";
 
 export const savePoVFirebase = async (pov = {}) => {
   try {
-    const { title, subtitle, points, owner } = pov;
+    const { title, points, author } = pov;
     const povData = {
       title: title,
-      subtitle: subtitle,
+      // subtitle: subtitle,
       points: points,
-      owner: owner,
+      author: author,
     };
     return await saveDocData(docName, "", povData);
   } catch (error) {
@@ -32,11 +32,11 @@ export const getPoVsFirebase = async () => {
   }
 };
 
-export const getPoVsByOwnerFirebase = async (ownerId) => {
+export const getPoVsByAuthorFirebase = async (authorId) => {
   try {
     return await loadDocsDataWhere(docName, 12, {
       field: "author",
-      value: ownerId,
+      value: authorId,
     });
   } catch (error) {
     throw error;
@@ -61,9 +61,9 @@ export const getPoVFirebase = async (povId) => {
   }
 };
 
-// export const getPoVByOwnerFirebase = async (userId, povId) => {
+// export const getPoVByAuthorFirebase = async (userId, povId) => {
 //   try {
-//     return await loadDocDataById(docName, userId, povId); // todo: match owner's pov
+//     return await loadDocDataById(docName, userId, povId); // todo: match author's pov
 //   } catch (error) {
 //     throw error;
 //   }
@@ -71,12 +71,12 @@ export const getPoVFirebase = async (povId) => {
 
 export const updatePoVFirebase = async (povId, pov) => {
   try {
-    const { title, subtitle, points, owner } = pov;
+    const { title, points, author } = pov;
     const povData = {
       title: title,
-      subtitle: subtitle,
+      // subtitle: subtitle,
       points: points,
-      owner: owner,
+      author: author,
     };
     return await setDocData(docName, povId, "", povData);
   } catch (error) {

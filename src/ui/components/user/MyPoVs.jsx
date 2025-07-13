@@ -1,7 +1,7 @@
 import { Grid2, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPovsByOwner } from "../../../services/api/pov/api-pov";
+import { fetchPovsByAuthor } from "../../../services/api/pov/api-pov";
 import { setPovs } from "../../../services/redux/slices/pov/povSlice";
 import { MyPoV } from "./MyPoV";
 
@@ -14,7 +14,7 @@ export const MyPoVs = () => {
   useEffect(() => {
     const povsFetch = async () => {
       try {
-        const povsFetched = await fetchPovsByOwner('', userAccount.token);
+        const povsFetched = await fetchPovsByAuthor('', userAccount.token);
         // const povsFetched = await fetchPoVs();
         if (povsFetched) {
           dispatch(setPovs(povsFetched));

@@ -30,7 +30,7 @@ import {
   strengthIndicator,
 } from "../../../../utils/password-strength";
 import { signUpUserWithEmailAndPassword } from "../../../../services/firebase/config/firebase-auth";
-import { saveUserFirebase } from "../../../../services/firebase/controller/user-firebase";
+import { saveUserFirebase, setUserFirebase } from "../../../../services/firebase/controller/user-firebase";
 
 export const AuthRegister = () => {
   const theme = useTheme();
@@ -95,8 +95,8 @@ export const AuthRegister = () => {
       .then((signedUpUser) => {
         // console.log("signed up user to save ",signedUpUser) remove
         if (signedUpUser) {
-          saveUserFirebase({
-            id: signedUpUser.uid,
+          setUserFirebase({
+            uid: signedUpUser.uid,
             displayName: signedUpUser.displayName,
             email: signedUpUser.email,
             displayPicture:signedUpUser.photoURL,

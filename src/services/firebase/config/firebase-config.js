@@ -36,17 +36,17 @@ const config = {
 };
 
 // ricky has bugs
-const firebaseConfig = () => {
-  if (!config || !config.apiKey) {
-    throw new Error(
-      "No firebase configuration object provided." +
-        "\n" +
-        "Add your web app's configuration object to firebase-config.js file"
-    );
-  } else {
-    return config;
-  }
-};
+// const firebaseConfig = () => {
+//   if (!config || !config.apiKey) {
+//     throw new Error(
+//       "No firebase configuration object provided." +
+//         "\n" +
+//         "Add your web app's configuration object to firebase-config.js file"
+//     );
+//   } else {
+//     return config;
+//   }
+// };
 
 // Initialize Firebase
 export const firebaseApp = initializeApp(config);

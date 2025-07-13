@@ -27,6 +27,7 @@ import { MainCard } from "../../cards/MainCard";
 import Transitions from "../../@extended/Transitions";
 import {
   currentUser,
+  isUserSignedIn,
   signOutFirebaseUser,
 } from "../../../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../../../services/firebase/controller/user-firebase";
@@ -71,11 +72,10 @@ export const ProfileMenu = () => {
 
   useEffect(() => {
     const user = currentUser();
-    if (user) {
+    if (user && isUserSignedIn) {
       getUserFirebase(user.uid)
         .then((userFirebase) => {
           if (userFirebase.exists) {
-
             setUserAccount(userFirebase);
           }
         })
@@ -131,7 +131,7 @@ export const ProfileMenu = () => {
             sx={{ width: 32, height: 32 }}
           />
           <Typography variant="subtitle1">
-            {userAccount
+            {userAccount.exists
               ? userAccount.name.first + " " + userAccount.name.last
               : "Guest"}
           </Typography>
@@ -185,7 +185,7 @@ export const ProfileMenu = () => {
                           >
                             <Avatar
                               alt={
-                                userAccount
+                                userAccount.exists
                                   ? userAccount.name.first.toUpperCase()
                                   : "Guest"
                               }
@@ -199,7 +199,7 @@ export const ProfileMenu = () => {
                                 variant="h4"
                                 textTransform={"capitalize"}
                               >
-                                {userAccount
+                                {userAccount.exists
                                   ? userAccount.name.first +
                                     " " +
                                     userAccount.name.last

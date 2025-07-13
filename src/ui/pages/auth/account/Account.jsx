@@ -24,7 +24,10 @@ import {
   isUserSignedIn,
 } from "../../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../../services/firebase/controller/user-firebase";
-import { getPoVsByOwnerFirebase } from "../../../../services/firebase/controller/pov-firebase";
+import {
+  getPoVsByAuthorFirebase,
+  savePoVFirebase,
+} from "../../../../services/firebase/controller/pov-firebase";
 
 export const Account = () => {
   // const [loading, setLoading] = useState(false);
@@ -46,8 +49,7 @@ export const Account = () => {
     if (user && isUserSignedIn()) {
       getUserFirebase(user.uid)
         .then((userFirebase) => {
-          
-          console.log("user account", userFirebase);
+          // console.log("user account", userFirebase); // remove
 
           if (userFirebase.exists) {
             setUserAccount(userFirebase);
@@ -59,14 +61,14 @@ export const Account = () => {
     }
   }, []);
 
-  console.log(userAccount);
-
   useEffect(() => {
     // setLoading(true);
     if (isUserSignedIn) {
-      getPoVsByOwnerFirebase(userAccount.uid)
-        .then((ownersPoVsFetched) => {
-          setPovs(ownersPoVsFetched);
+      getPoVsByAuthorFirebase(userAccount.uid)
+        .then((authorsPoVsFetched) => {
+          console.log("author's povs -", authorsPoVsFetched);
+          
+          setPovs(authorsPoVsFetched);
         })
         .catch((error) => {
           setError(error.message);
@@ -127,22 +129,25 @@ export const Account = () => {
   };
 
   const createPoVHandle = async (poV) => {
-    // try {
-    //   const token = await auth.isAuthenticated();
-    //   if (token) {
-    //     const poVCreated = await createPoV(poV, token);
-    //     if (poVCreated) {
-    //       dispatch(addPoV(poVCreated));
-    //       handleClosePoVDialog();
-    //     }
-    //   } else {
-    //     setError("Please sign-in");
-    //     setOpenErrorSnackBar(true);
-    //   }
-    // } catch (error) {
-    //   setError(error.message);
-    //   setOpenErrorSnackBar(true);
-    // }
+    if (isUserSignedIn()) {
+      console.log("pov to save - ", poV);
+
+      savePoVFirebase(poV)
+        .then((savedFirebasePoV) => {
+          console.log("new POV - ", savedFirebasePoV);
+          if (savedFirebasePoV) {
+            handleClosePoVDialog();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(error.message);
+          setOpenErrorSnackBar(true);
+        });
+    } else {
+      setError("Please sign-in");
+      setOpenErrorSnackBar(true);
+    }
   };
 
   return (
@@ -153,7 +158,7 @@ export const Account = () => {
             <Grid2 item xs={4}>
               <Avatar
                 variant="rounded"
-                alt={userAccount ? userAccount.name.first : "Guest"}
+                alt={userAccount.exists ? userAccount.name.first : "Guest"}
                 src={userAccount.displayPicture}
                 sx={{
                   width: "100px",
@@ -163,12 +168,15 @@ export const Account = () => {
             </Grid2>
             <Grid2 item xs={8}>
               <Typography variant="h2">
-                {userAccount
+                {userAccount.exists
                   ? userAccount.name.first + " " + userAccount.name.last
                   : "Guest"}
               </Typography>
               <Typography variant="body2">
-                {`Joined: ${new Date(userAccount.createdAt).toDateString()}`}
+                {`Joined: ${
+                  userAccount.exists &&
+                  userAccount.createdAt.toDate().toDateString()
+                }`}
               </Typography>
             </Grid2>
           </Grid2>

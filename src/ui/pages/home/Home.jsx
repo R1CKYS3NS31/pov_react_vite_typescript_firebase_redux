@@ -12,8 +12,7 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { MainCard } from "../../components/ui/cards/MainCard";
+import { useEffect, useState } from "react";
 import { PoV } from "../../components/pov/PoV";
 import { Search } from "@mui/icons-material";
 import { getPoVsFirebase } from "../../../services/firebase/controller/pov-firebase";
@@ -39,9 +38,12 @@ export const Home = () => {
     // setLoading(true);
     getPoVsFirebase()
       .then((poVsFetched) => {
+        console.log(poVsFetched);
+        
         setPovs(poVsFetched)
       })
       .catch((error) => {
+        console.error(error);        
         setError(error.message);
         setOpenErrorSnackBar(true);
       });

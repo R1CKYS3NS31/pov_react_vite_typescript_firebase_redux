@@ -39,18 +39,6 @@ export const saveDocData = async (docName, pathSegment = "", docData) => {
   }
 };
 
-// const applyQueryFilters = (q, { owner, sort }) => {
-//   if (owner) {
-//     q = query(q, where("owner", "==", owner));
-//   }
-//   if (sort === "createdAt" || !sort) {
-//     q = query(q, orderBy("createdAt", "desc"));
-//   } else if (sort === "updatedAt") {
-//     q = query(q, orderBy("updatedAt", "desc"));
-//   }
-//   return q;
-// };
-
 export const loadDocsData = async (docName, limitNo = 12, filters = {}) => {
   try {
     const recentQuery = query(
@@ -65,7 +53,7 @@ export const loadDocsData = async (docName, limitNo = 12, filters = {}) => {
         return {
           size: snapshot.size,
           empty: snapshot.empty,
-          docs: snapshot.docs.flatMap((doc) => {
+          docs: snapshot.docs.map((doc) => {
             return {
               id: doc.id,
               exists: doc.exists(),
@@ -76,32 +64,7 @@ export const loadDocsData = async (docName, limitNo = 12, filters = {}) => {
       })
       .catch((error) => {
         throw error;
-      }); // or
-
-    // let colSnapshot={};
-    // onSnapshot(recentQuery, (snapshot) => {
-    //   // realtime
-    //   // NB:// costly
-    //   // snapshot.docChanges().forEach((change) => {
-    //   //   if (change.type === "removed") {
-    //   //     // deleted doc - delete local doc
-    //   //   }
-    //   //   const docData = change.doc;
-    //   // });
-    //   colSnapshot = {
-    //     size: snapshot.size,
-    //     empty: snapshot.empty,
-    //     docs: snapshot.docs.flatMap((doc) => {
-    //       return {
-    //         id: doc.id,
-    //         exists: doc.exists(),
-    //         ...doc.data(),
-    //       };
-    //     }),
-    //   };
-    // });
-
-    // return colSnapshot
+      }); 
   } catch (error) {
     throw error;
   }
