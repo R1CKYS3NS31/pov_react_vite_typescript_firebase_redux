@@ -209,7 +209,7 @@ export const Account = () => {
           </Typography>
           <Grid2 container spacing={0.5}>
             {!povs.empty ? (
-              povs.map((pov) => (
+              povs.docs.map((pov) => (
                 <Grid2 item size={{ xs: 12, md: 6 }} key={pov.id}>
                   <PoV pov={pov} />
                 </Grid2>

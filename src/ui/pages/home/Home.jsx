@@ -32,7 +32,7 @@ export const Home = () => {
     // setLoading(true);
     getPoVsFirebase()
       .then((poVsFetched) => {
-        console.log(poVsFetched);
+        console.log("fetched povs - ",poVsFetched); // remove
 
         setPovs(poVsFetched);
       })

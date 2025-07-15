@@ -11,6 +11,7 @@ import {
   Share,
 } from "@mui/icons-material";
 import {
+  Avatar,
   Card,
   SpeedDial,
   SpeedDialAction,
@@ -24,9 +25,20 @@ import { PoVFormFields } from "./PoVFormFields";
 import { formatNumber } from "../../../utils/formatNumber";
 import { DialogDelete } from "../ui/dialog/DialogDelete";
 import { DialogCommentPoV } from "../ui/dialog/DialogCommentPoV";
-import { currentUser } from "../../../services/firebase/config/firebase-auth";
+import {
+  currentUser,
+  isUserSignedIn,
+} from "../../../services/firebase/config/firebase-auth";
 import { getUserFirebase } from "../../../services/firebase/controller/user-firebase";
 import { ErrorSnackbar } from "../ui/snackbar/ErrorSnackbar";
+import {
+  commentOnPoVFirebase,
+  deletePoVFirebase,
+  likePoVFirebase,
+  unLikePoVFirebase,
+  updatePoVFirebase,
+} from "../../../services/firebase/controller/pov-firebase";
+import { Link } from "react-router-dom";
 
 export const PoV = ({ pov }) => {
   const [editedPoV, setEditedPoV] = useState(pov);
@@ -57,48 +69,50 @@ export const PoV = ({ pov }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const likeFound = pov.likes.find(
-  //     (like) => userAccount && userAccount.uid === like
-  //   );
-  //   userAccount && userAccount.uid === pov.author.id
-  //     ? setSpeedActions([
-  //         {
-  //           icon: <DeleteSweep />,
-  //           name: "Delete",
-  //         },
-  //         { icon: <EditNote />, name: "Edit" },
-  //         pov.published
-  //           ? { icon: <Public />, name: "Unpublish" }
-  //           : { icon: <Public />, name: "Publish" },
-  //         // { icon: <FileCopy />, name: "Copy" },
-  //         { icon: <Share />, name: "Share" },
-  //         { icon: <Comment />, name: "Comment" },
-  //         likeFound
-  //           ? {
-  //               icon: <Favorite />,
-  //               name: `UnLike (${formatNumber(pov.likes.length)})`,
-  //             }
-  //           : {
-  //               icon: <FavoriteBorder />,
-  //               name: `Like (${formatNumber(pov.likes.length)})`,
-  //             },
-  //       ])
-  //     : setSpeedActions([
-  //         { icon: <FileCopy />, name: "Copy" },
-  //         { icon: <Share />, name: "Share" },
-  //         { icon: <Comment />, name: "Comment" },
-  //         likeFound
-  //           ? {
-  //               icon: <Favorite />,
-  //               name: `UnLike (${formatNumber(pov.likes.length)})`,
-  //             }
-  //           : {
-  //               icon: <FavoriteBorder />,
-  //               name: `Like (${formatNumber(pov.likes.length)})`,
-  //             },
-  //       ]);
-  // }, [userAccount, pov]);
+  useEffect(() => {
+    if (pov.likes) {
+      const likeFound = pov.likes.find(
+        (like) => userAccount && userAccount.uid === like
+      );
+      userAccount && userAccount.uid === pov.author.id
+        ? setSpeedActions([
+            {
+              icon: <DeleteSweep />,
+              name: "Delete",
+            },
+            { icon: <EditNote />, name: "Edit" },
+            pov.published
+              ? { icon: <Public />, name: "Unpublish" }
+              : { icon: <Public />, name: "Publish" },
+            // { icon: <FileCopy />, name: "Copy" },
+            { icon: <Share />, name: "Share" },
+            { icon: <Comment />, name: "Comment" },
+            likeFound
+              ? {
+                  icon: <Favorite />,
+                  name: `UnLike (${formatNumber(pov.likes.length)})`,
+                }
+              : {
+                  icon: <FavoriteBorder />,
+                  name: `Like (${formatNumber(pov.likes.length)})`,
+                },
+          ])
+        : setSpeedActions([
+            { icon: <FileCopy />, name: "Copy" },
+            { icon: <Share />, name: "Share" },
+            { icon: <Comment />, name: "Comment" },
+            likeFound
+              ? {
+                  icon: <Favorite />,
+                  name: `UnLike (${formatNumber(pov.likes.length)})`,
+                }
+              : {
+                  icon: <FavoriteBorder />,
+                  name: `Like (${formatNumber(pov.likes.length)})`,
+                },
+          ]);
+    }
+  }, [userAccount, pov]);
 
   const [error, setError] = useState("");
   const [openPoVDialog, setOpenPoVDialog] = useState(false);
@@ -144,43 +158,42 @@ export const PoV = ({ pov }) => {
   };
 
   const handleLike = async () => {
-    // const token = await auth.isAuthenticated();
-    // if (token) {
-    //   const likeFound = pov.likes.find((like) => like === userAccount.uid);
-    //   // console.log("like found ", likeFound);
-    //   if (likeFound) {
-    //     // console.log("clicked to unlike");
-    //     await unLikePoV(pov.id, token)
-    //       .then((unLikedPoV) => {
-    //         // console.log("like pov ", likedPoV);
-    //         // dispatch pov edit
-    //         if (unLikedPoV) {
-    //           dispatch(editPoV(unLikedPoV));
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         setError(error);
-    //         setOpenErrorSnackBar(true);
-    //       });
-    //   } else {
-    //     // console.log("clicked to like");
-    //     await likePoV(pov.id, token)
-    //       .then((likedPoV) => {
-    //         // console.log("like pov ", likedPoV);
-    //         // dispatch pov edit
-    //         if (likedPoV) {
-    //           dispatch(editPoV(likedPoV));
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         setError(error);
-    //         setOpenErrorSnackBar(true);
-    //       });
-    //   }
-    // } else {
-    //   setError("Please sign-in");
-    //   setOpenErrorSnackBar(true);
-    // }
+    if (isUserSignedIn()) {
+      const likeFound = pov.likes.find((like) => like === userAccount.uid);
+      console.log("like found ", likeFound); // remove
+      if (likeFound) {
+        // console.log("clicked to unlike");
+        await unLikePoVFirebase(pov.id, userAccount.uid)
+          .then((unLikedPoVFirebase) => {
+            console.log("like pov ", unLikedPoVFirebase);
+            // dispatch pov edit
+            // if (unLikedPoV) {
+            //   dispatch(editPoV(unLikedPoV));
+            // }
+          })
+          .catch((error) => {
+            setError(error);
+            setOpenErrorSnackBar(true);
+          });
+      } else {
+        // console.log("clicked to like");
+        await likePoVFirebase(pov.id, userAccount.uid)
+          .then((likedPoVFirebase) => {
+            console.log("like pov ", likedPoVFirebase);
+            // dispatch pov edit
+            // if (likedPoV) {
+            //   dispatch(editPoV(likedPoV));
+            // }
+          })
+          .catch((error) => {
+            setError(error);
+            setOpenErrorSnackBar(true);
+          });
+      }
+    } else {
+      setError("Please sign-in");
+      setOpenErrorSnackBar(true);
+    }
   };
 
   const handleCommentPoV = async (event) => {
@@ -194,25 +207,31 @@ export const PoV = ({ pov }) => {
   };
 
   const commentPoVHandle = async (povComment) => {
-    // try {
-    //   const token = await auth.isAuthenticated();
-    //   if (token) {
-    //     // console.log("comment ", await povComment);
-    //     const povCommented = await commentPoV(await povComment, token);
-    //     if (povCommented) {
-    //       dispatch(editPoV(povCommented));
-    //       // handleClosePoVDialog();
-    //     }
-    //   } else {
-    //     setError("Please sign-in");
-    //     setOpenErrorSnackBar(true);
-    //     handleClosePoVDialog();
-    //   }
-    // } catch (error) {
-    //   setError(error);
-    //   setOpenErrorSnackBar(true);
-    //   handleClosePoVDialog();
-    // }
+    try {
+      if (isUserSignedIn()) {
+        // console.log("comment ", await povComment);
+        await commentOnPoVFirebase(pov.id, userAccount.uid, await povComment)
+          .then((povCommentedFirebase) => {
+            if (povCommentedFirebase) {
+              console.log("comment on pov - ", povCommentedFirebase);
+
+              // dispatch(editPoV(povCommented));
+              handleClosePoVDialog();
+            }
+          })
+          .catch((error) => {
+            throw error;
+          });
+      } else {
+        setError("Please sign-in");
+        setOpenErrorSnackBar(true);
+        handleClosePoVDialog();
+      }
+    } catch (error) {
+      setError(error);
+      setOpenErrorSnackBar(true);
+      handleClosePoVDialog();
+    }
   };
 
   const handleClickAction = (action) => {
@@ -275,45 +294,55 @@ export const PoV = ({ pov }) => {
   };
 
   const updatePoVHandle = async (povUpdate) => {
-    // try {
-    //   const token = await auth.isAuthenticated();
-    //   if (token) {
-    //     const poVUpdated = await updatePoV(pov.id, povUpdate, token);
-    //     if (poVUpdated) {
-    //       dispatch(editPoV(poVUpdated));
-    //       handleClosePoVDialog();
-    //     }
-    //   } else {
-    //     setError("Please sign-in");
-    //     setOpenErrorSnackBar(true);
-    //     handleClosePoVDialog();
-    //   }
-    // } catch (error) {
-    //   setError(error);
-    //   setOpenErrorSnackBar(true);
-    //   handleClosePoVDialog();
-    // }
+    try {
+      if (isUserSignedIn()) {
+        await updatePoVFirebase(pov.id, povUpdate)
+          .then((poVUpdatedFirebase) => {
+            if (poVUpdatedFirebase) {
+              console.log("updated pov - ", poVUpdatedFirebase); // remove
+
+              // dispatch(editPoV(poVUpdated));
+              handleClosePoVDialog();
+            }
+          })
+          .catch((error) => {
+            throw error;
+          });
+      } else {
+        setError("Please sign-in");
+        setOpenErrorSnackBar(true);
+        handleClosePoVDialog();
+      }
+    } catch (error) {
+      setError(error);
+      setOpenErrorSnackBar(true);
+      handleClosePoVDialog();
+    }
   };
 
   const handlePoVDelete = async () => {
-    // try {
-    //   const token = await auth.isAuthenticated();
-    //   if (token) {
-    //     const poVDeleted = await deletePoV(pov.id, token);
-    //     if (poVDeleted) {
-    //       dispatch(removePov(poVDeleted.id));
-    //       handleCloseDeleteDialog();
-    //     }
-    //   } else {
-    //     setError("Please sign-in");
-    //     setOpenErrorSnackBar(true);
-    //     handleCloseDeleteDialog();
-    //   }
-    // } catch (error) {
-    //   setError(error);
-    //   setOpenErrorSnackBar(true);
-    //   handleCloseDeleteDialog();
-    // }
+    try {
+      if (isUserSignedIn()) {
+        await deletePoVFirebase(pov.id)
+          .then((poVDeletedFirebase) => {
+            if (poVDeletedFirebase) {
+              // dispatch(removePov(poVDeleted.id));
+              handleCloseDeleteDialog();
+            }
+          })
+          .catch((error) => {
+            throw error;
+          });
+      } else {
+        setError("Please sign-in");
+        setOpenErrorSnackBar(true);
+        handleCloseDeleteDialog();
+      }
+    } catch (error) {
+      setError(error);
+      setOpenErrorSnackBar(true);
+      handleCloseDeleteDialog();
+    }
   };
 
   return (
@@ -340,12 +369,12 @@ export const PoV = ({ pov }) => {
       >
         <Stack direction={"row"} justifyContent={"space-between"}>
           <Stack direction={"row"} spacing={1}>
-            {/* <Link to={`/profile/${pov.author.id}`}>
+            <Link to={`/profile/${pov.author.id}`}>
               <Avatar
                 src={pov.author.displayPicture}
                 alt={pov.author.name.first}
               />
-            </Link> */}
+            </Link>
             <Stack>
               <Typography
                 variant="h4"
@@ -359,8 +388,8 @@ export const PoV = ({ pov }) => {
                 color={"secondary"}
                 sx={{ overflowWrap: "anywhere", wordWrap: "break-word" }}
               >
-                {/* {`${pov.author.name.first} ${pov.author.name.last}`} */}
-                {pov.author}
+                {`${pov.author.name.first} ${pov.author.name.last}`}
+                {/* {pov.author} */}
               </Typography>
             </Stack>
           </Stack>{" "}
