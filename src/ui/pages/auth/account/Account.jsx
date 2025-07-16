@@ -127,10 +127,14 @@ export const Account = () => {
       await savePoVFirebase(poV)
         .then((savedFirebasePoV) => {
           if (savedFirebasePoV) {
-            getPoVFirebase(savedFirebasePoV)
+            getPoVFirebase(savedFirebasePoV.id)
               .then((firebasePoV) => {
                 console.log("new POV - ", firebasePoV);
-                setPovs([...povs, firebasePoV]);
+                setPovs((prev) => ({
+                  size: prev.size + 1,
+                  empty: false,
+                  docs: [...prev.docs, firebasePoV],
+                }));
                 handleClosePoVDialog();
               })
               .catch((error) => {
