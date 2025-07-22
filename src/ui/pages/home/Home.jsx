@@ -67,17 +67,17 @@ export const Home = () => {
   });
 
   return (
-    <Grid container>
+    <Grid container direction={"column"} spacing={2}>
       <Grid item container spacing={2} direction={"row"}>
-        <Grid item >
-          <Typography variant="h3">PoV Blog</Typography>
+        <Grid item component={Typography} variant="h3" size={5}>
+          PoV Blog
         </Grid>
-        <Grid item size={{ xs: 6 }}>
+        <Grid item size={5}>
           <Autocomplete
             freeSolo
             id="search"
             autoHighlight
-            options={povs.docs??[]}
+            options={povs.docs ?? []}
             getOptionLabel={(pov) => pov.title ?? ""}
             filterOptions={poVFilterOptions}
             onChange={handleSearch}
@@ -123,7 +123,7 @@ export const Home = () => {
           />
         </Grid>
       </Grid>
-      <Grid item container spacing={0.5}>
+      <Grid item container spacing={1} justifyContent={"center"}>
         {loading ? (
           <LoadingLinear message="Loading PoVs..." />
         ) : !povs.empty &&
@@ -131,12 +131,14 @@ export const Home = () => {
           povs.docs
             .filter((pov) => pov.published)
             .map((pov) => (
-              <Grid item size={{  md: 6 }} key={pov.id}>
+              <Grid item size={{ xs: 12, md: 6 }} key={pov.id}>
                 <PoV poV={pov} />
               </Grid>
             ))
         ) : (
-          <NoData message="No PoVs available yet!" />
+          <Grid item>
+            <NoData message="No PoVs available yet!" />
+          </Grid>
         )}
       </Grid>
       <ErrorSnackbar

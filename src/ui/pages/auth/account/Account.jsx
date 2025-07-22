@@ -28,6 +28,7 @@ import {
 } from "../../../../services/firebase/controller/pov-firebase";
 import { ErrorSnackbar } from "../../../components/ui/snackbar/ErrorSnackbar";
 import { LoadingLinear } from "../../../components/ui/data/LoadingLinear";
+import { NoData } from "../../../components/ui/data/NoData";
 
 export const Account = () => {
   const [error, setError] = useState("");
@@ -155,9 +156,9 @@ export const Account = () => {
   return (
     <MainCard title={"Account"} sx={{ minHeight: "100vh" }}>
       <Grid container direction={"column"} spacing={2}>
-        <Grid item size={6} container spacing={2}>
-          <Grid item size={{md:6}} container spacing={2}>
-            <Grid item size={4}>
+        <Grid item container spacing={2}>
+          <Grid item container spacing={1}>
+            <Grid item>
               <Avatar
                 variant="rounded"
                 alt={userAccount.exists ? userAccount.name.first : "Guest"}
@@ -168,7 +169,7 @@ export const Account = () => {
                 }}
               />
             </Grid>
-            <Grid item size={8}>
+            <Grid item>
               <Typography variant="h2">
                 {userAccount.exists
                   ? userAccount.name.first + " " + userAccount.name.last
@@ -182,43 +183,52 @@ export const Account = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Grid item size={{md:6}}>
-            <Typography variant="h4">About</Typography>
-            <Typography variant="body1">{userAccount.description}</Typography>
-            <List component={Stack} direction={"row"} spacing={1}>
-              <ListItem>
-                <ListItemIcon>
-                  <EmailOutlined />
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography variant="subtitle1">
-                      {userAccount.email}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <PhoneOutlined />
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography variant="subtitle1">
-                      {userAccount.tel}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            </List>
+          <Grid item component={Stack} direction={"column"}>
+            <Stack direction={"column"}>
+              <Typography variant="h4">About</Typography>
+              <Typography variant="body1">{userAccount.description}</Typography>
+            </Stack>
+            <Stack direction={"column"}>
+              <List component={Stack} direction={"row"} spacing={1}>
+                <ListItem>
+                  <ListItemIcon>
+                    <EmailOutlined />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="subtitle1">
+                        {userAccount.email}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <PhoneOutlined />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="subtitle1">
+                        {userAccount.tel}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              </List>
+            </Stack>
           </Grid>
         </Grid>
         <Divider />
-        <Grid item size={6}>
-          <Typography variant="h4" justifySelf={"center"}>
+        <Grid item container direction={"column"}>
+          <Grid
+            item
+            component={Typography}
+            variant="h3"
+            alignSelf={"center"}
+          >
             PoVs
-          </Typography>
-          <Grid container spacing={0.5}>
+          </Grid>
+          <Grid item container spacing={1} justifyContent={"center"}>
             {loading ? (
               <LoadingLinear message="Loading PoVs..." />
             ) : !povs.empty ? (
@@ -228,16 +238,16 @@ export const Account = () => {
                 </Grid>
               ))
             ) : (
-              <Typography variant="h4" sx={{ justifySelf: "center" }}>
-                no pov available
-              </Typography>
+               <Grid item>
+                         <NoData message="No PoVs available yet!" />
+                       </Grid>
             )}
           </Grid>
         </Grid>
         <Fab
           variant="extended"
           sx={{
-            backgroundColor: "#f3f3f3",
+            bgColor: "primary.main",
             right: "5vh",
             bottom: "10vh",
             position: "fixed",
