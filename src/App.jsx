@@ -5,7 +5,7 @@ import { Routes } from "./ui/routes/routes";
 
 // import env from 'dotenv'
 // env.config()
-console.log(process.env.PROJECT_ID);
+// console.log(process.env.PROJECT_ID);
 
 const App = () => {
   return (

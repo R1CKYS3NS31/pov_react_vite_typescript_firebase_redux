@@ -1,7 +1,9 @@
-import React from 'react'
+import { Grid, Typography } from '@mui/material'
 
 export const Test = () => {
   return (
-    <div>Test</div>
+    <Grid container >
+      <Typography></Typography>
+    </Grid>
   )
 }

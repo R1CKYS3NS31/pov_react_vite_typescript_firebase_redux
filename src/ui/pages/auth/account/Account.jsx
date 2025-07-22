@@ -27,12 +27,14 @@ import {
   savePoVFirebase,
 } from "../../../../services/firebase/controller/pov-firebase";
 import { ErrorSnackbar } from "../../../components/ui/snackbar/ErrorSnackbar";
+import { LoadingLinear } from "../../../components/ui/data/LoadingLinear";
 
 export const Account = () => {
   const [error, setError] = useState("");
+
+  const [loading, setLoading] = useState(false);
   const [openPoVDialog, setOpenPoVDialog] = useState(false);
   const [openErrorSnackBar, setOpenErrorSnackBar] = useState(false);
-
   const [povs, setPovs] = useState({ size: 0, empty: true, docs: [] });
   const [userAccount, setUserAccount] = useState({
     exists: false,
@@ -56,6 +58,7 @@ export const Account = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     if (isUserSignedIn) {
       getPoVsByAuthorFirebase(userAccount.uid)
         .then((authorsPoVsFetched) => {
@@ -64,10 +67,12 @@ export const Account = () => {
         .catch((error) => {
           setError(error.message);
           setOpenErrorSnackBar(true);
-        });
+        })
+        .finally(() => setLoading(false));
     } else {
       setError("Please sign-in");
       setOpenErrorSnackBar(true);
+      setLoading(false);
     }
   }, [userAccount]);
 
@@ -111,10 +116,9 @@ export const Account = () => {
         setOpenErrorSnackBar(true);
       }
     } catch (error) {
-      console.log(error);
-      setError(`*${error}`);
+      console.error(error);
+      setError(error.message);
       setOpenErrorSnackBar(true);
-      // alert(`Error creating PoV: ${error}`);
     }
   };
 
@@ -215,7 +219,9 @@ export const Account = () => {
             PoVs
           </Typography>
           <Grid2 container spacing={0.5}>
-            {!povs.empty ? (
+            {loading ? (
+              <LoadingLinear message="Loading PoVs..." />
+            ) : !povs.empty ? (
               povs.docs.map((pov) => (
                 <Grid2 item size={{ xs: 12, md: 6 }} key={pov.id}>
                   <PoV poV={pov} />

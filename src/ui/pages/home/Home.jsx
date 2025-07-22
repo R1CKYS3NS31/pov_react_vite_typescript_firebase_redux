@@ -3,10 +3,10 @@ import {
   Avatar,
   createFilterOptions,
   Grid2,
-  Input,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -17,10 +17,12 @@ import {
   searchPoVsByTitleFirebase,
 } from "../../../services/firebase/controller/pov-firebase";
 import { ErrorSnackbar } from "../../components/ui/snackbar/ErrorSnackbar";
+import { NoData } from "../../components/ui/data/NoData";
+import { LoadingLinear } from "../../components/ui/data/LoadingLinear";
 
 export const Home = () => {
   const [povs, setPovs] = useState({ size: 0, empty: true, docs: [] });
-
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [openErrorSnackBar, setOpenErrorSnackBar] = useState(false);
 
@@ -32,7 +34,7 @@ export const Home = () => {
   };
 
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     getPoVsFirebase()
       .then((poVsFetched) => {
         setPovs(poVsFetched);
@@ -41,12 +43,13 @@ export const Home = () => {
         console.error(error);
         setError(error.message);
         setOpenErrorSnackBar(true);
-      });
-    // .finally(() => setLoading(false));
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleSearch = async (event, povSearch) => {
     event.preventDefault();
+    setLoading(true);
     await searchPoVsByTitleFirebase(povSearch ? await povSearch.title : "")
       .then((povsSearchedFirebase) => {
         console.log(povsSearchedFirebase);
@@ -55,17 +58,18 @@ export const Home = () => {
       .catch((error) => {
         setError(error.message);
         setOpenErrorSnackBar(true);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
-  const poVFilterOptoins = createFilterOptions({
+  const poVFilterOptions = createFilterOptions({
     stringify: (pov) => `${pov.title || ""} (${pov.points ?? ""})`,
   });
 
   return (
     <Grid2 container>
-      <Grid2 item size={{ xs: 12 }} container spacing={2} direction={"row"}>
-        <Grid2 item size={{ xs: 6 }}>
+      <Grid2 item xs={12} container spacing={2} direction={"row"}>
+        <Grid2 item xs={6}>
           <Typography variant="h3">PoV Blog</Typography>
         </Grid2>
         <Grid2 item size={{ xs: 6 }}>
@@ -73,12 +77,12 @@ export const Home = () => {
             freeSolo
             id="search"
             autoHighlight
-            options={povs.docs}
+            options={povs.docs??[]}
             getOptionLabel={(pov) => pov.title ?? ""}
-            filterOptions={poVFilterOptoins}
+            filterOptions={poVFilterOptions}
             onChange={handleSearch}
             renderOption={(props, pov) => (
-              <ListItem sx={{ p: 0 }} {...props}>
+              <ListItem sx={{ p: 0 }} {...props} key={pov.id}>
                 <ListItemAvatar>
                   <Avatar
                     variant="rounded"
@@ -101,30 +105,29 @@ export const Home = () => {
               </ListItem>
             )}
             renderInput={(params) => (
-              <Input
+              <TextField
                 {...params}
                 variant="standard"
                 label="Search for PoV..."
                 placeholder="title/point of view"
-                type="search"
-                startAdornment={<Search sx={{ pr: 1 }} fontSize="small" />}
               />
             )}
+            slots={{
+              startAdornment: () => <Search sx={{ pr: 1 }} fontSize="small" />,
+            }}
+            slotProps={{
+              startAdornment: {
+                sx: { display: "flex", alignItems: "center" },
+              },
+            }}
           />
-          {/* <Input
-              label="Search for PoV..."
-              placeholder="Search for PoV..."
-              fullWidth
-              onChange={handleSearch}
-              InputProps={{
-                type: "search",
-              }}
-              startAdornment={<Search />}
-            /> */}
         </Grid2>
       </Grid2>
       <Grid2 item container spacing={0.5}>
-        {!povs.empty && povs.docs.filter((pov) => pov.published).length > 0 ? (
+        {loading ? (
+          <LoadingLinear message="Loading PoVs..." />
+        ) : !povs.empty &&
+          povs.docs.filter((pov) => pov.published).length > 0 ? (
           povs.docs
             .filter((pov) => pov.published)
             .map((pov) => (
@@ -133,9 +136,7 @@ export const Home = () => {
               </Grid2>
             ))
         ) : (
-          <Typography variant="h4" sx={{ justifyContent: "center" }}>
-            no pov available
-          </Typography>
+          <NoData message="No PoVs available yet!" />
         )}
       </Grid2>
       <ErrorSnackbar
