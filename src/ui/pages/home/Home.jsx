@@ -123,7 +123,7 @@ export const Home = () => {
           />
         </Grid>
       </Grid>
-      <Grid item container spacing={1} justifyContent={"center"}>
+      <Grid item container spacing={1} justifyContent={"center"} >
         {loading ? (
           <LoadingLinear message="Loading PoVs..." />
         ) : !povs.empty &&
