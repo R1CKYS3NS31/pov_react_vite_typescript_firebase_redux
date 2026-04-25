@@ -5,7 +5,7 @@ import {
   searchPoVsByTitleFirebase,
 } from "../service/firebase/controller/pov-firebase";
 import { useNotificationHandler } from "./useNotificationHandler";
-import { selectPovsPage } from "../service/redux/slices/povs/povsSlice";
+import { selectPovsPage } from "../service/redux/selectors/povSelector";
 import { setPovs } from "../service/redux/slices/pov/povSlice";
 import { useEffect } from "react";
 

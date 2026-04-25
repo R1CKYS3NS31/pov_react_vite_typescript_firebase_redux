@@ -14,16 +14,25 @@ import {
   deletePoVFirebase,
   updatePoVFirebase,
 } from "../service/firebase/controller/pov-firebase";
-import { selectUserAccount } from "../services/redux/selectors/userSelector";
+import { selectUserAccount } from "../service/redux/selectors/userAccountSelector";
 import {
   setUserAccount,
   editUserAccount,
   removeUserAccount,
-} from "../services/redux/slices/user/userAccountSlice";
-import { selectMyPovsPage } from "../services/redux/selectors/povSelector";
-import { selectPovsLocalPage } from "../services/redux/selectors/povSelector";
-import { addMyPov, editMyPov, removeMyPov, setMyPovs } from "../service/redux/slices/pov/myPovSlice";
-import { addPoVLocal, editPoVLocal, removePovLocal } from "../service/redux/slices/pov/povLocalSlice";
+} from "../service/redux/slices/user/userAccountSlice";
+import { selectMyPovsPage } from "../service/redux/selectors/povSelector";
+import { selectPovsLocalPage } from "../service/redux/selectors/povSelector";
+import {
+  addMyPov,
+  editMyPov,
+  removeMyPov,
+  setMyPovs,
+} from "../service/redux/slices/pov/myPovSlice";
+import {
+  addPoVLocal,
+  editPoVLocal,
+  removePovLocal,
+} from "../service/redux/slices/pov/povLocalSlice";
 
 export const useAccount = () => {
   const dispatch = useDispatch();
@@ -42,7 +51,6 @@ export const useAccount = () => {
 
   const { isAuthenticated, account: authAccount } = useAuth();
   const reduxUserAccount = useSelector(selectUserAccount);
-
 
   const reduxMyPovsPage = useSelector(selectMyPovsPage);
   const reduxPovsLocalPage = useSelector(selectPovsLocalPage);
@@ -67,10 +75,10 @@ export const useAccount = () => {
     }
   }, [userAccount, authAccount, dispatch]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (!myPoVsData?.empty) {
       dispatch(setMyPovs(myPoVsData));
-    }    
+    }
   }, [myPoVsData, dispatch]);
 
   const account = userAccount?.exists
@@ -79,9 +87,7 @@ export const useAccount = () => {
       ? authAccount
       : reduxUserAccount;
 
-  const myPoVs = myPoVsData?.empty
-    ? reduxMyPovsPage
-    : myPoVsData;
+  const myPoVs = myPoVsData?.empty ? reduxMyPovsPage : myPoVsData;
 
   const handleUpdateUserAccount = useCallback(
     (userData) => {
@@ -145,7 +151,7 @@ export const useAccount = () => {
       const localPov = {
         ...povData,
         id,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
       dispatch(addPoVLocal(localPov));
       return id;
@@ -158,7 +164,7 @@ export const useAccount = () => {
       setUpdateLoading(true);
       return updatePoVFirebase(povId, povData)
         .then((response) => {
-        dispatch(editMyPov(response));
+          dispatch(editMyPov(response));
           notify("PoV updated successfully!", "success");
           return response;
         })
@@ -173,7 +179,7 @@ export const useAccount = () => {
       const updatedLocalPov = {
         ...povData,
         id: povId,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
       dispatch(editPoVLocal(updatedLocalPov));
     },
@@ -216,7 +222,7 @@ export const useAccount = () => {
   return {
     account,
     myPoVs,
-    povLocal: reduxPovsLocalPage,
+    localPoVs: reduxPovsLocalPage,
     createPov,
     updatePov,
     deletePov,

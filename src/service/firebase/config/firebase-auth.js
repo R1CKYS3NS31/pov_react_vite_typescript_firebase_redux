@@ -14,6 +14,7 @@ import {
   updateProfile,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { firebaseApp } from "./firebase-config";
 
@@ -68,6 +69,14 @@ export const signOutFirebaseUser = async () => {
  * Check if user is signed in.
  */
 export const isUserSignedIn = () => !!auth.currentUser;
+
+/**
+ * Subscribe to auth state changes.
+ */
+export const onAuthStateChangedFirebase = (callback) => {
+  const unsubscribe = onAuthStateChanged(auth, callback);
+  return unsubscribe;
+};
 
 /**
  * Get current user.

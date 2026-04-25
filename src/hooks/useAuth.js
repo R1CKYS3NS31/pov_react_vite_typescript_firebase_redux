@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNotificationHandler } from "./useNotificationHandler";
 import {
   signInUserWithEmailAndPassword,
@@ -9,8 +8,12 @@ import {
   signOutFirebaseUser,
   reauthenticateUserFirebase,
   updateUserPasswordFirebase,
+  onAuthStateChangedFirebase,
 } from "../service/firebase/config/firebase-auth";
-import { getUserFirebase, setUserFirebase } from "../service/firebase/controller/user-firebase";
+import {
+  getUserFirebase,
+  setUserFirebase,
+} from "../service/firebase/controller/user-firebase";
 import { setUserAccount } from "../service/redux/slices/user/userAccountSlice";
 
 export const useAuth = () => {
@@ -23,17 +26,16 @@ export const useAuth = () => {
   const { notification, notify, closeNotification, handleApiError } =
     notificationHandler;
 
-  const auth = getAuth();
-
+  // const isAuthenticated = useCallback(() => !!isUserSignedIn(), []);
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
+    const unsubscribe = onAuthStateChangedFirebase((currentUser) => {
+      setUser(currentUser);
       setLoading(false);
     });
-    return () => unsubscribe();
-  }, [auth]);
+    return unsubscribe;
+  }, []);
 
-  const isAuthenticated = useCallback(() => !!user, [user]);
+  const isAuthenticated = !!user;
 
   const handleSignUp = useCallback(
     async (userData) => {
@@ -55,7 +57,10 @@ export const useAuth = () => {
             displayPicture: user.displayPicture,
             name: {
               first: name?.first || user.displayName?.split(" ")[0] || "",
-              last: name?.last || user.displayName?.split(" ").slice(1).join(" ") || "",
+              last:
+                name?.last ||
+                user.displayName?.split(" ").slice(1).join(" ") ||
+                "",
             },
             description: description || "",
           })
@@ -94,7 +99,8 @@ export const useAuth = () => {
     [notify, handleApiError, dispatch],
   );
 
-  const handleGoogleSignIn = useCallback(() => { // r1cky_s3ns31 has bugs
+  const handleGoogleSignIn = useCallback(() => {
+    // r1cky_s3ns31 has bugs
     setAuthLoading(true);
     return signInWithGoogleAuth()
       .then(async ({ user, isNewUser }) => {
@@ -135,7 +141,8 @@ export const useAuth = () => {
       .finally(() => setAuthLoading(false));
   }, [notify, handleApiError]);
 
-  const handleUpdatePassword = useCallback( // r1cky_s3ns31 has bugs
+  const handleUpdatePassword = useCallback(
+    // r1cky_s3ns31 has bugs
     async (currentPassword, newPassword) => {
       setAuthLoading(true);
       return await reauthenticateUserFirebase(currentPassword)
@@ -145,7 +152,7 @@ export const useAuth = () => {
         })
         .catch((error) => {
           handleApiError(error);
-            throw error;
+          throw error;
         })
         .finally(() => setAuthLoading(false));
     },
@@ -155,7 +162,7 @@ export const useAuth = () => {
   return {
     account: user,
     loading: loading || authLoading,
-    isAuthenticated: isAuthenticated(),
+    isAuthenticated: isAuthenticated,
     notification,
     closeNotification,
     handleSignUp,

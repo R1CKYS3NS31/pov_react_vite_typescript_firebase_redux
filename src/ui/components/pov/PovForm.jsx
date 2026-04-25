@@ -192,6 +192,25 @@ const PovForm = ({
                 Cancel
               </Button>
 
+               {/* Secondary Action Button (Drafts) */}
+              {(!pov || formData.isLocal) && (
+                <Button
+                  onClick={(e) => handleSubmit(e, false)}
+                  variant="outlined"
+                  color="secondary"
+                  disabled={loading}
+                  startIcon={<SaveIcon sx={{ fontSize: 18 }} />}
+                  sx={{
+                    px: 2.5,
+                    borderRadius: 2,
+                    fontWeight: 700,
+                    textTransform: "none",
+                  }}
+                >
+                  {pov ? "Update Draft" : "Save Draft"}
+                </Button>
+              )}
+
               {/* Main Action Button (Updates/Global Post) */}
               <Button
                 onClick={(e) => handleSubmit(e, true)}

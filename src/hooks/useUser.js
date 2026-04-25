@@ -11,7 +11,7 @@ export const useUser = (userId) => {
     userId,
     { notificationHandler },
   );
-
+  
   return {
     userProfile,
     loading,

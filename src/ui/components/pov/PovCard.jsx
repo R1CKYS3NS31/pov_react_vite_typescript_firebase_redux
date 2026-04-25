@@ -39,15 +39,15 @@ const PovCard = ({
 
   const handleAuthorClick = (e) => {
     e.stopPropagation();
-    if (!pov.author?.id || pov.author.id === account?.id) {
+    if (!pov?.author?.id || pov?.author?.id === account?.id) {
       navigate("/account");
     } else {
-      navigate(`/profile/${pov.author.id}`);
+      navigate(`/profile/${pov?.author?.id}`);
     }
   };
 
   const handleDeleteConfirm = () => {
-    onDelete?.(pov.id);
+    onDelete?.(pov?.id);
     setDeleteDialogOpen(false);
   };
 
@@ -58,9 +58,9 @@ const PovCard = ({
         navigator.share &&
         /mobile|android|iphone/i.test(navigator.userAgent)
       ) {
-        const url = `${window.location.origin}/pov/${pov.id}`;
+        const url = `${window.location.origin}/pov/${pov?.id}`;
         navigator
-          .share({ title: pov.title, text: pov.description, url })
+          .share({ title: pov?.title, text: pov?.description, url })
           .catch(() => {
             setShareDialogOpen(true);
           });
@@ -70,6 +70,24 @@ const PovCard = ({
     } catch {
       setShareDialogOpen(true);
     }
+  };
+
+  const formatDate = (dateValue) => {
+    if (!dateValue) return "Date unknown";
+    try {
+      // Handle Firebase Timestamp
+      if (dateValue.toDate && typeof dateValue.toDate === "function") {
+        return dateValue.toDate().toLocaleString();
+      }
+      // Handle Date object or ISO string
+      const date = new Date(dateValue);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleString();
+      }
+    } catch (e) {
+      console.warn("Error formatting date:", e);
+    }
+    return "Invalid date";
   };
 
   return (
@@ -92,10 +110,10 @@ const PovCard = ({
           <Grid container spacing={1.5} sx={{ width: "100%" }}>
             {/* Author Avatar Column */}
             <Grid size="auto">
-              <Tooltip title={`View ${pov.author?.name?.first}'s profile`}>
+              <Tooltip title={`View ${pov?.author?.name?.first}'s profile`}>
                 <Avatar
                   src={pov?.author?.displayPicture}
-                  alt={`${pov.author?.name?.full}`}
+                  alt={`${pov?.author?.name?.full}`}
                   onClick={handleAuthorClick}
                   sx={{
                     width: 34,
@@ -140,7 +158,7 @@ const PovCard = ({
                     color="text.secondary"
                     sx={{ ml: 1, fontWeight: 500 }}
                   >
-                    • {pov?.createdAt?.toDate().toLocaleString()}
+                    • {formatDate(pov?.createdAt)}
                   </Typography>
                 </Box>
 
@@ -164,7 +182,7 @@ const PovCard = ({
                     </IconButton>
                   </Tooltip>
                    {onPublish && (
-                    <Tooltip title={pov.published ? "Unpublish POV" : "Publish POV"}>
+                    <Tooltip title={pov?.published ? "Unpublish POV" : "Publish POV"}>
                       <IconButton
                         size="small"
                         color="primary"
@@ -178,7 +196,7 @@ const PovCard = ({
                           "&:hover": { opacity: 1, bgcolor: "action.hover" },
                         }}
                       >
-                        {pov.published ? <PublicRoundedIcon fontSize="small" /> : <PublicOffRoundedIcon fontSize="small" />}
+                        {pov?.published ? <PublicRoundedIcon fontSize="small" /> : <PublicOffRoundedIcon fontSize="small" />}
                       </IconButton>
                     </Tooltip>
                   )}
@@ -230,7 +248,7 @@ const PovCard = ({
                 color="text.primary"
                 sx={{ mt: 0.5, mb: 0.5, lineHeight: 1.3 }}
               >
-                {pov.title || "Untitled Perspective"}
+                {pov?.title || "Untitled Perspective"}
               </Typography>
 
               {/* POV Description */}
@@ -247,13 +265,13 @@ const PovCard = ({
                   overflow: "hidden",
                 }}
               >
-                {pov.description || "No description provided."}
+                {pov?.description || "No description provided."}
               </Typography>
 
               {/* POV Points (Unified String/Array Schema) */}
-              {((Array.isArray(pov.points) && pov.points.length > 0) || (typeof pov.points === "string" && pov.points.trim())) && (
+              {((Array.isArray(pov?.points) && pov?.points?.length > 0) || (typeof pov?.points === "string" && pov?.points?.trim())) && (
                 <Stack spacing={0.5} sx={{ mb: 1 }}>
-                  {(Array.isArray(pov.points) 
+                  {(Array.isArray(pov?.points) 
                     ? pov.points 
                     : pov.points.split("\n").filter(p => p.trim())
                   ).map((point, idx) => (
@@ -307,7 +325,7 @@ const PovCard = ({
             This action is permanent and cannot be undone. Are you sure you want
             to delete{" "}
             <Box component="strong" sx={{ color: "text.primary" }}>
-              "{pov.title}"
+              "{pov?.title}"
             </Box>
             ?
           </DialogContentText>

@@ -1,9 +1,12 @@
-import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { showNotification, hideNotification } from '../services/redux/slices/ui/notificationSlice';
-import { selectNotification } from '../services/redux/selectors/notificationSelectors';
+import { useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  hideNotification,
+  showNotification,
+} from "../service/redux/slices/ui/notificationSlice";
+import { selectNotification } from "../service/redux/selectors/notificationSelector";
 
-export const useNotificationHandler = () => {  
+export const useNotificationHandler = () => {
   const dispatch = useDispatch();
   const reduxNotification = useSelector(selectNotification);
 

@@ -6,6 +6,7 @@ import { useUiSettings } from "./hooks/useUiSettings";
 import AppLoadingScreen from "./ui/components/layout/AppLoadingScreen";
 import { AppRoutes } from "./ui/routes/AppRoutes";
 import { PoVNotification } from "./ui/components/notification/PoVNotification";
+import { ErrorBoundary } from "./ui/components/error/ErrorBoundary";
 
 const App = () => {
 
@@ -14,10 +15,11 @@ const App = () => {
   return (
     <ThemeProvider theme={activeTheme}>
       <CssBaseline />
-      {/* <ThemeToggleFab /> */}
-      <Suspense fallback={<AppLoadingScreen />}>
-        <AppRoutes />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<AppLoadingScreen />}>
+          <AppRoutes />
+        </Suspense>
+      </ErrorBoundary>
       <PoVNotification />
     </ThemeProvider>
   );

@@ -151,6 +151,7 @@ export const AccountSettingsDialog = ({
       PaperProps={{ sx: { borderRadius: 3, bgcolor: "background.paper" } }}
     >
       <DialogTitle
+        component="div"
         sx={{
           m: 0,
           p: 3,
@@ -252,6 +253,7 @@ export const AccountSettingsDialog = ({
                   fullWidth
                   label="First Name"
                   name="firstName"
+                  autoComplete="given-name"
                   value={profileData.firstName}
                   onChange={handleProfileChange}
                   variant="outlined"
@@ -262,6 +264,7 @@ export const AccountSettingsDialog = ({
                   fullWidth
                   label="Last Name"
                   name="lastName"
+                  autoComplete="family-name"
                   value={profileData.lastName}
                   onChange={handleProfileChange}
                   variant="outlined"
@@ -274,6 +277,7 @@ export const AccountSettingsDialog = ({
                   rows={2}
                   label="Bio description"
                   name="description"
+                  autoComplete="off"
                   value={profileData.description}
                   onChange={handleProfileChange}
                   variant="outlined"
@@ -303,6 +307,7 @@ export const AccountSettingsDialog = ({
                   label="Email Address"
                   name="email"
                   type="email"
+                  autoComplete="email"
                   value={profileData.email}
                   onChange={handleProfileChange}
                   variant="outlined"
@@ -341,6 +346,7 @@ export const AccountSettingsDialog = ({
                     label="Current Password"
                     type="password"
                     name="currentPassword"
+                    autoComplete="current-password"
                     value={securityData.currentPassword}
                     onChange={handleSecurityChange}
                     size="small"
@@ -361,6 +367,7 @@ export const AccountSettingsDialog = ({
                     label="New Password"
                     type="password"
                     name="newPassword"
+                    autoComplete="new-password"
                     value={securityData.newPassword}
                     onChange={handleSecurityChange}
                     size="small"
@@ -381,6 +388,7 @@ export const AccountSettingsDialog = ({
                     label="Confirm New Password"
                     type="password"
                     name="confirmPassword"
+                    autoComplete="new-password"
                     value={securityData.confirmPassword}
                     onChange={handleSecurityChange}
                     size="small"

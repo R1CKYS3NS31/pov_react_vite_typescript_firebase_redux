@@ -9,17 +9,33 @@ import CloseIcon from "@mui/icons-material/CloseRounded";
 import PovForm from "./PovForm";
 import { useAccount } from "../../../hooks/useAccount";
 
-export const PovDialog = ({ open, onClose, povToEdit = null }) => {
+export const PovDialog = ({ open, onClose, povToEdit = null, isLocal }) => {
   const theme = useTheme();
 
-  const { account, createPov, updatePov, loading } = useAccount();
+  const {
+    account,
+    createPov,
+    updatePov,
+    createPovLocal,
+    updatePovLocal,
+    loading,
+  } = useAccount();
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData, isServerPost = false) => {
     let userData;
     if (povToEdit) {
       userData = {
         ...povToEdit,
         ...formData,
+      };
+    } else if (isLocal) {
+      userData = {
+        ...formData,
+        author: {
+          id: await account?.id,
+          name: await account?.name,
+          displayPicture: await account?.displayPicture,
+        },
       };
     } else {
       userData = {
@@ -29,10 +45,21 @@ export const PovDialog = ({ open, onClose, povToEdit = null }) => {
     }
 
     try {
-      if (povToEdit) {
-        await updatePov(povToEdit.id, userData);
+      if (isServerPost) {
+        if (povToEdit && !isLocal) {
+          await updatePov(povToEdit.id, userData);
+        } else {
+          await createPov(userData);
+          if (isLocal && povToEdit?.id) {
+            delete povToEdit?.id;
+          }
+        }
       } else {
-        await createPov(userData);
+        if (povToEdit && isLocal) {
+          updatePovLocal(povToEdit.id, userData);
+        } else {
+          await createPovLocal(userData);
+        }
       }
       onClose();
     } catch (err) {
@@ -42,6 +69,7 @@ export const PovDialog = ({ open, onClose, povToEdit = null }) => {
 
   return (
     <Dialog
+      id="pov-dialog"
       open={open}
       onClose={onClose}
       maxWidth="sm"
