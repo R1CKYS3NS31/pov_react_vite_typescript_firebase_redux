@@ -1,7 +1,7 @@
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
-import { alpha } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import Search from "@mui/icons-material/Search";
 import Clear from "@mui/icons-material/Clear";
 

@@ -1,4 +1,4 @@
-import { alpha } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";

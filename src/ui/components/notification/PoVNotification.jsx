@@ -1,7 +1,7 @@
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
-import { useTheme, alpha } from "@mui/material";
+import { useTheme, alpha } from "@mui/material/styles";
 import { useNotificationHandler } from "../../../hooks/useNotificationHandler";
 import CheckCircleOutlineRounded from "@mui/icons-material/CheckCircleOutlineRounded";
 import ErrorOutlineRounded from "@mui/icons-material/ErrorOutlineRounded";

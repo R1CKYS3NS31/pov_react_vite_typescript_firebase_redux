@@ -1,20 +1,17 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  Stack,
-  alpha,
-  useTheme,
-  Grid,
-  Divider,
-} from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
+import Divider from "@mui/material/Divider";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
-import PersonAdd from "@mui/icons-material/PersonAddRounded";
-import ArrowForward from "@mui/icons-material/ArrowForwardRounded";
+import PersonAddRounded from "@mui/icons-material/PersonAddRounded";
+import ArrowForwardRounded from "@mui/icons-material/ArrowForwardRounded";
 import Google from "@mui/icons-material/Google";
 
 const Signup = () => {
@@ -92,7 +89,7 @@ const Signup = () => {
                 boxShadow: `0 8px 24px -4px ${alpha(theme.palette.primary.main, 0.5)}`,
               }}
             >
-              <PersonAdd />
+              <PersonAddRounded />
             </Box>
             <Typography variant="h5" fontWeight={850} gutterBottom>
               Join POV
@@ -223,7 +220,7 @@ const Signup = () => {
                 type="submit"
                 variant="contained"
                 disabled={loading}
-                endIcon={<ArrowForward />}
+                endIcon={<ArrowForwardRounded />}
                 sx={{
                   py: 1.2,
                   borderRadius: 2.5,

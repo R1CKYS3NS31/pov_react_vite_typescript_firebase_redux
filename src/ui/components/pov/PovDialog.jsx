@@ -1,6 +1,6 @@
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import { useTheme } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import CloseRounded from "@mui/icons-material/CloseRounded";

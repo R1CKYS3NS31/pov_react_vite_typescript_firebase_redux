@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Paper,
-  Stack,
-  alpha,
-  useTheme,
-  Divider,
-  TextField,
-} from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import Login from "@mui/icons-material/LoginRounded";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { alpha, useTheme, keyframes } from "@mui/material";
+import { alpha, useTheme, keyframes } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";

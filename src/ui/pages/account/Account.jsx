@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { alpha, useTheme } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";

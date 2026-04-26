@@ -19,7 +19,7 @@ import Stack from "@mui/material/Stack";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import Share from "@mui/icons-material/Share";
-import { alpha } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import SharePovModal from "./SharePovModal";
 import PublicRounded from "@mui/icons-material/PublicRounded";
 import PublicOffRounded from "@mui/icons-material/PublicOffRounded";
