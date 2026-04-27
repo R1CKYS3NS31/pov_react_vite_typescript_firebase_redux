@@ -14,6 +14,7 @@ import {
   updateDoc,
   where,
   getCountFromServer,
+  orderBy,
 } from "firebase/firestore";
 import { firebaseApp } from "./firebase-config";
 
@@ -84,7 +85,7 @@ export const saveDocData = async (
  * Load documents from a collection with limit and optional filters.
  * Simulates offset pagination by fetching up to the requested page.
  */
-export const loadDocsData = async (collectionName, page = 0, size = 12) => {
+export const loadDocsData = async (collectionName, page = 0, size = 12, sortBy = "createdAt", sortDirection = "desc") => {
   const colRef = getCol(collectionName);
   
   // Get total count
@@ -94,7 +95,12 @@ export const loadDocsData = async (collectionName, page = 0, size = 12) => {
 
   // Fetch documents up to the requested page
   const fetchLimit = (page + 1) * size;
-  const q = query(colRef, limit(fetchLimit));
+  let q;
+  if (sortBy) {
+    q = query(colRef, orderBy(sortBy, sortDirection), limit(fetchLimit));
+  } else {
+    q = query(colRef, limit(fetchLimit));
+  }
 
   return await getDocs(q)
     .then((snapshot) => {
@@ -151,10 +157,18 @@ export const loadDocsDataWhere = async (
   page = 0,
   size = 12,
   filters = [{ field: "", operator: "==", value: "" }],
+  sortBy = null,
+  sortDirection = "desc",
 ) => {
   const colRef = getCol(collectionName);
   const filterQuery = filters.map(({ field, operator, value }) => where(field, operator, value));
-  const qBase = query(colRef, ...filterQuery);
+  
+  let qBase;
+  if (sortBy) {
+    qBase = query(colRef, ...filterQuery, orderBy(sortBy, sortDirection));
+  } else {
+    qBase = query(colRef, ...filterQuery);
+  }
 
   // Get total count for the filtered query
   const snapshotCount = await getCountFromServer(qBase);
@@ -163,7 +177,12 @@ export const loadDocsDataWhere = async (
 
   // Fetch documents up to the requested page
   const fetchLimit = (page + 1) * size;
-  const qLimit = query(colRef, ...filterQuery, limit(fetchLimit));
+  let qLimit;
+  if (sortBy) {
+    qLimit = query(colRef, ...filterQuery, orderBy(sortBy, sortDirection), limit(fetchLimit));
+  } else {
+    qLimit = query(colRef, ...filterQuery, limit(fetchLimit));
+  }
 
   return await getDocs(qLimit)
     .then((snapshot) => {

@@ -34,8 +34,8 @@ export const savePoVFirebase = async (pov = {}) => {
 /**
  * Get all PoVs with populated authors.
  */
-export const getPoVsFirebase = async ({ page = 0, size = 12 } = {}) => {
-  return await loadDocsData(collectionName, page, size)
+export const getPoVsFirebase = async ({ page = 0, size = 12, sortBy = "createdAt" } = {}) => {
+  return await loadDocsData(collectionName, page, size, sortBy)
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
       return await Promise.all(populatePromises).then((populatedDocs) => ({
@@ -52,14 +52,14 @@ export const getPoVsFirebase = async ({ page = 0, size = 12 } = {}) => {
 /**
  * Get published PoVs with populated authors.
  */
-export const getPoVsPublishedFirebase = async ({ page = 0, size = 12 } = {}) => {
+export const getPoVsPublishedFirebase = async ({ page = 0, size = 12, sortBy = "createdAt" } = {}) => {
   return await loadDocsDataWhere(collectionName, page, size, [
     {
       field: "published",
       operator: "==",
       value: true,
     }
-  ])
+  ], sortBy)
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
       return await Promise.all(populatePromises).then((populatedDocs) => ({
@@ -76,7 +76,7 @@ export const getPoVsPublishedFirebase = async ({ page = 0, size = 12 } = {}) => 
 /**
  * Search published PoVs by title.
  */
-export const searchPoVsByTitleFirebase = async (title, { page = 0, size = 12 } = {}) => {
+export const searchPoVsByTitleFirebase = async (title, { page = 0, size = 12, sortBy = "createdAt" } = {}) => {
   return await loadDocsDataWhere(collectionName, page, size, [
     {
       field: "title",
@@ -93,7 +93,7 @@ export const searchPoVsByTitleFirebase = async (title, { page = 0, size = 12 } =
       operator: "==",
       value: true,
     }
-  ])
+  ], sortBy)
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
       return await Promise.all(populatePromises).then((populatedDocs) => ({
@@ -110,14 +110,14 @@ export const searchPoVsByTitleFirebase = async (title, { page = 0, size = 12 } =
 /**
  * Get my PoVs (published or not).
  */
-export const getMyPoVsFirebase = async (authorId, { page = 0, size = 12 } = {}) => {
+export const getMyPoVsFirebase = async (authorId, { page = 0, size = 12, sortBy = "createdAt" } = {}) => {
   return await loadDocsDataWhere(collectionName, page, size, [
     {
       field: "author",
       operator: "==",
       value: authorId,
     }
-  ])
+  ], sortBy)
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
       return await Promise.all(populatePromises).then((populatedDocs) => ({
@@ -134,7 +134,7 @@ export const getMyPoVsFirebase = async (authorId, { page = 0, size = 12 } = {}) 
 /**
  * Get PoVs by author.
  */
-export const getPoVsByAuthorFirebase = async (authorId, { page = 0, size = 12 } = {}) => {
+export const getPoVsByAuthorFirebase = async (authorId, { page = 0, size = 12, sortBy = "createdAt" } = {}) => {
   return await loadDocsDataWhere(collectionName, page, size,  [
     {
       field: "author",
@@ -146,7 +146,7 @@ export const getPoVsByAuthorFirebase = async (authorId, { page = 0, size = 12 } 
       operator: "==",
       value: true,
     }
-  ])
+  ], sortBy)
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
       return await Promise.all(populatePromises).then((populatedDocs) => ({

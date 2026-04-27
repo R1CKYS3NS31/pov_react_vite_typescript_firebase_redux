@@ -1,10 +1,11 @@
+import { forwardRef } from "react";
 import Fab from "@mui/material/Fab";
 import Tooltip from "@mui/material/Tooltip";
 import DarkMode from "@mui/icons-material/DarkMode";
 import LightMode from "@mui/icons-material/LightMode";
 import { useUiSettings } from "../../../hooks/useUiSettings";
 
-const ThemeToggleFab = () => {
+const ThemeToggleFab = forwardRef((props, ref) => {
   const { themeType, toggleTheme } = useUiSettings();
 
   return (
@@ -15,6 +16,8 @@ const ThemeToggleFab = () => {
       color="primary"
     >
       <Fab
+        ref={ref}
+        {...props}
         color="primary"
         aria-label="toggle theme"
         size="small"
@@ -25,6 +28,8 @@ const ThemeToggleFab = () => {
       </Fab>
     </Tooltip>
   );
-};
+});
+
+ThemeToggleFab.displayName = "ThemeToggleFab";
 
 export default ThemeToggleFab;

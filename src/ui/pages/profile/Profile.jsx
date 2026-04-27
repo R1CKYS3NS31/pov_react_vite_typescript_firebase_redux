@@ -126,26 +126,6 @@ const Profile = () => {
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3, lineHeight: 1.6 }}>
               {profile?.description ?? "No bio provided."}
             </Typography>
-
-            {/* Stat chip */}
-            <Stack
-              sx={{
-                px: 2,
-                py: 1.5,
-                borderRadius: 2,
-                bgcolor: alpha(primary, 0.08),
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
-              <Typography variant="h5" fontWeight={800} color="primary.main">
-                {povItems.length}
-              </Typography>
-              <Typography variant="overline" color="text.secondary">
-                Perspectives
-              </Typography>
-            </Stack>
-
-
             <Stack
               sx={{
                 px: 2,

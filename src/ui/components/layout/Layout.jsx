@@ -13,12 +13,16 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import Logout from "@mui/icons-material/Logout";
 import Login from "@mui/icons-material/Login";
 import { Link, Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import ThemeToggleFab from "../fab/ThemeToggleFab";
+import { Fab, Tooltip, Zoom } from "@mui/material";
+import { KeyboardArrowUpRounded } from "@mui/icons-material";
 
 const Layout = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showTopBtn, setShowTopBtn] = useState(false);
+
   const {
     isAuthenticated,
     account: userAccount,
@@ -28,11 +32,23 @@ const Layout = () => {
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <Grid
       container
       direction={"column"}
-        sx={{
+      sx={{
         minHeight: "100vh",
         width: "100%",
         m: 0,
@@ -40,64 +56,68 @@ const Layout = () => {
         bgcolor: "background.default",
       }}
     >
-      <Grid size={{xs: 12}}> 
+      <Grid size={{ xs: 12 }}>
         <AppBar position="fixed" elevation={0} sx={{ top: 0 }}>
-        <Toolbar component={Stack} direction={"row"} 
-          variant="dense"
-          disableGutters
-          sx={{
-            width: "100%",
-            px: { xs: 2, md: 2.5 },
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography
-            variant="h6"
-            component={Link}
-            to="/"
+          <Toolbar
+            component={Stack}
+            direction={"row"}
+            variant="dense"
+            disableGutters
             sx={{
-              fontWeight: 950,
-              color: "primary.main",
-              textDecoration: "none",
-              letterSpacing: "-0.5px",
-              display: "flex",
+              width: "100%",
+              px: { xs: 2, md: 2.5 },
               alignItems: "center",
-              gap: 1.5,
-              transition: "transform 0.2s",
-              "&:hover": { transform: "scale(1.02)" },
+              justifyContent: "space-between",
             }}
           >
-            <Box
+            <Typography
+              variant="h6"
+              component={Link}
+              to="/"
               sx={{
-                width: 28,
-                height: 28,
-                bgcolor: "primary.main",
-                borderRadius: 1,
+                fontWeight: 950,
+                color: "primary.main",
+                textDecoration: "none",
+                letterSpacing: "-0.5px",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                color: "primary.contrastText",
-                fontSize: "1.1rem",
+                gap: 1.5,
+                transition: "transform 0.2s",
+                "&:hover": { transform: "scale(1.02)" },
               }}
             >
-              P
-            </Box>
-            POV
-          </Typography>
-          <IconButton
-            onClick={handleMenuOpen}
-            sx={{ p: 0.5 }}
-          >
-            <Avatar
-              src={userAccount?.displayPicture}
-              sx={{ width: 32, height: 32, bgcolor: "primary.main", fontWeight: 700 }}
-            >
-              {userAccount?.name?.first?.[0] || <AccountCircle />}
-            </Avatar>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+              <Box
+                sx={{
+                  width: 28,
+                  height: 28,
+                  bgcolor: "primary.main",
+                  borderRadius: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "primary.contrastText",
+                  fontSize: "1.1rem",
+                }}
+              >
+                P
+              </Box>
+              POV
+            </Typography>
+            <IconButton onClick={handleMenuOpen} sx={{ p: 0.5 }}>
+              <Avatar
+                src={userAccount?.displayPicture}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  bgcolor: "primary.main",
+                  fontWeight: 700,
+                }}
+              >
+                {userAccount?.name?.first?.[0] || <AccountCircle />}
+              </Avatar>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
       </Grid>
 
       {/* Account / Action Dropdown Menu */}
@@ -137,10 +157,8 @@ const Layout = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <Stack spacing={1} >
-          <Typography variant="subtitle1" >
-            {userAccount?.name?.full}
-          </Typography>
+        <Stack spacing={1}>
+          <Typography variant="subtitle1">{userAccount?.name?.full}</Typography>
           <Typography variant="caption" color="text.secondary">
             {userAccount?.email || "Local Account"}
           </Typography>
@@ -161,10 +179,7 @@ const Layout = () => {
         <Divider sx={{ my: 1 }} />
 
         {isAuthenticated ? (
-          <MenuItem
-            onClick={logout}
-            sx={{ color: "error.main" }}
-          >
+          <MenuItem onClick={logout} sx={{ color: "error.main" }}>
             <Logout sx={{ mr: 2, fontSize: 20 }} /> Sign Out
           </MenuItem>
         ) : (
@@ -173,14 +188,34 @@ const Layout = () => {
             to="/signin"
             sx={{ color: "primary.main" }}
           >
-            <Login sx={{ mr: 2, fontSize: 20 }} />Sign In / Support PoV
+            <Login sx={{ mr: 2, fontSize: 20 }} />
+            Sign In / Support PoV
           </MenuItem>
         )}
       </Menu>
 
-      <Grid size={{xs: 12}} sx={{ pt: 8, px: {xs: 2, md: 2.5}}}>
+      <Grid size={{ xs: 12 }} sx={{ pt: 8, px: { xs: 2, md: 2.5 } }}>
         <Outlet />
-        <ThemeToggleFab />
+        <Stack
+          spacing={2}
+          sx={{ position: "fixed", bottom: 80, right: 16, zIndex: 1000 }}
+        >
+          <Zoom in={showTopBtn} unmountOnExit>
+            <Tooltip title="Back to top" placement="left" arrow>
+              <Fab
+                color="secondary"
+                size="small"
+                onClick={scrollToTop}
+                aria-label="scroll back to top"
+              >
+                <KeyboardArrowUpRounded />
+              </Fab>
+            </Tooltip>
+          </Zoom>
+          <Zoom in unmountOnExit>
+            <ThemeToggleFab />
+          </Zoom>
+        </Stack>
       </Grid>
     </Grid>
   );

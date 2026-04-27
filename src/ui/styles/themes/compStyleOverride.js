@@ -273,8 +273,12 @@ export const componentStyleOverrides = (theme) => {
     MuiDivider: {
       styleOverrides: {
         root: {
-          borderColor: theme.divider,
-          opacity: 0.8,
+          border: "none",
+          height: 1,
+          margin: "0",
+          flexShrink: 0,
+          background: `linear-gradient(90deg, transparent, ${theme.colors?.primary?.main || "#f6c143"}, transparent)`,
+          opacity: 0.6,
         },
       },
     },
@@ -331,12 +335,16 @@ export const componentStyleOverrides = (theme) => {
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: isDark ? theme.colors?.grey?.[900] : theme.colors?.grey?.[800],
+          backgroundColor: isDark ? theme.colors?.grey?.[100] || "#f5f5f5" : theme.colors?.grey?.[900] || "#1e1e1e",
+          color: isDark ? theme.colors?.grey?.[900] || "#1e1e1e" : theme.colors?.grey?.[50] || "#ffffff",
           fontSize: "0.75rem",
           padding: "8px 12px",
           borderRadius: "6px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
         },
+        arrow: {
+          color: isDark ? theme.colors?.grey?.[100] || "#f5f5f5" : theme.colors?.grey?.[900] || "#1e1e1e",
+        }
       },
     },
 
