@@ -23,6 +23,7 @@ export const componentStyleOverrides = (theme) => {
           textTransform: "none",
           boxShadow: "none",
           "&:hover": { boxShadow: "none" },
+          "&:active": { transform: "scale(0.97)" },
         },
         containedPrimary: {
           background: `linear-gradient(135deg, ${primary}, ${primaryDark})`,
@@ -33,6 +34,7 @@ export const componentStyleOverrides = (theme) => {
             filter: "brightness(1.06)",
             boxShadow: `0 8px 20px ${alpha(primary, 0.5)}`,
           },
+          "&:active": { transform: "scale(0.97)" },
         },
         containedSecondary: {
           background: `linear-gradient(135deg, ${secondary}, ${secondaryDark})`,
@@ -41,6 +43,7 @@ export const componentStyleOverrides = (theme) => {
             transform: "translateY(-1.5px)",
             filter: "brightness(1.06)",
           },
+          "&:active": { transform: "scale(0.97)" },
         },
         outlinedPrimary: { borderColor: primary },
       },
@@ -145,6 +148,7 @@ export const componentStyleOverrides = (theme) => {
         root: {
           transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
           "&:hover": { transform: "scale(1.06) translateY(-2px)" },
+          "&:active": { transform: "scale(0.95)" },
         },
         colorPrimary: {
           background: `linear-gradient(135deg, ${primary} 0%, ${primaryDark} 100%)`,
@@ -154,6 +158,7 @@ export const componentStyleOverrides = (theme) => {
             boxShadow: `0 14px 32px ${alpha(primary, 0.55)}`,
             filter: "brightness(1.06)",
           },
+          "&:active": { transform: "scale(0.95)" },
         },
       },
     },
@@ -276,6 +281,21 @@ export const componentStyleOverrides = (theme) => {
 
     // ─── Avatar ────────────────────────────────────────────────────────────
     MuiAvatar: {
+      variants: [
+        {
+          props: { variant: "logo" },
+          style: {
+            background: `linear-gradient(135deg, ${primary}, ${secondary})`,
+            color: primaryContrast,
+            boxShadow: `0 8px 24px ${alpha(primary, 0.45)}`,
+            borderRadius: "12px",
+            width: 72,
+            height: 72,
+            fontSize: "2.25rem",
+            fontWeight: 900,
+          },
+        },
+      ],
       styleOverrides: {
         root: {
           color: theme.colors?.primary?.dark || "#8B5A12",
@@ -368,6 +388,36 @@ export const componentStyleOverrides = (theme) => {
     },
     MuiTable: { defaultProps: { size: "small" } },
     MuiButtonGroup: { defaultProps: { size: "small" } },
+    MuiPaginationItem: {
+      styleOverrides: {
+        root: {
+          fontWeight: 800,
+          borderRadius: `${br}px`,
+          transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+          "&:hover": {
+            backgroundColor: alpha(primary, 0.08),
+            transform: "translateY(-2px)",
+          },
+          "&:active": { transform: "scale(0.95)" },
+          "&.Mui-selected": {
+            background: `linear-gradient(135deg, ${primary} 0%, ${primaryDark} 100%) !important`,
+            color: primaryContrast,
+            boxShadow: `0 6px 16px -4px ${alpha(primary, 0.5)}`,
+            border: "none",
+            "&:hover": {
+              transform: "translateY(-2px) scale(1.05)",
+              boxShadow: `0 8px 20px -4px ${alpha(primary, 0.6)}`,
+            },
+            "&:active": { transform: "scale(0.95)" },
+          },
+        },
+        ellipsis: {
+          border: "none",
+          backgroundColor: "transparent",
+          "&:hover": { backgroundColor: "transparent", transform: "none" },
+        },
+      },
+    },
     MuiCheckbox: { defaultProps: { size: "small" } },
     MuiFormControl: { defaultProps: { margin: "dense", size: "small" } },
     MuiFormHelperText: { defaultProps: { margin: "dense" } },
@@ -375,5 +425,28 @@ export const componentStyleOverrides = (theme) => {
     MuiRadio: { defaultProps: { size: "small" } },
     MuiSwitch: { defaultProps: { size: "small" } },
     MuiTextField: { defaultProps: { margin: "dense", size: "small" } },
+    MuiTypography: {
+      variants: [
+        {
+          props: { variant: "gradientText" },
+          style: {
+            background: `linear-gradient(135deg, ${theme.colors?.text?.primary || "#180d00"}, ${alpha(theme.colors?.text?.primary || "#180d00", 0.5)})`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          },
+        },
+        {
+          props: { variant: "gradientHero" },
+          style: {
+            background: `linear-gradient(270deg, ${primary}, ${secondary}, ${alpha(primary, 0.65)}, ${primary})`,
+            backgroundSize: "300% 300%",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          },
+        },
+      ],
+    },
   };
 };

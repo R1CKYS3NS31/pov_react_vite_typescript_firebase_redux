@@ -22,18 +22,8 @@ export const HomeHero = () => {
   const navigate = useNavigate();
 
   const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary.main;
-  const textMain = theme.palette.text.primary;
 
   const pulseGlow = makePulseGlow(primary);
-
-  /** Reusable gradient-clipped text sx — avoids repeating 4 properties 3 times */
-  const gradientTextSx = (from, to, deg = 135) => ({
-    background: `linear-gradient(${deg}deg, ${from} 0%, ${to} 100%)`,
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
-  });
 
   return (
     <Stack
@@ -73,36 +63,25 @@ export const HomeHero = () => {
           mb: 2.5,
         }}
       >
-        <Box
-          component="span"
-          sx={gradientTextSx(textMain, alpha(textMain, 0.5))}
-        >
+        <Typography variant="gradientText" component="span" fontSize="inherit" fontWeight="inherit">
           Discover{" "}
-        </Box>
+        </Typography>
 
-        <Box
+        <Typography
+          variant="gradientHero"
           component="span"
-          sx={{
-            ...gradientTextSx(primary, alpha(primary, 0.65), 270),
-            background: `linear-gradient(270deg, ${primary}, ${secondary}, ${alpha(primary, 0.65)}, ${primary})`,
-            backgroundSize: "300% 300%",
-            animation: `${gradientShift} 5s ease infinite`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
+          fontSize="inherit"
+          fontWeight="inherit"
+          sx={{ animation: `${gradientShift} 5s ease infinite` }}
         >
           True
-        </Box>
+        </Typography>
 
         <br />
 
-        <Box
-          component="span"
-          sx={gradientTextSx(textMain, alpha(textMain, 0.5))}
-        >
+        <Typography variant="gradientText" component="span" fontSize="inherit" fontWeight="inherit">
           Perspectives
-        </Box>
+        </Typography>
       </Typography>
 
       {/* ── Sub-headline ── */}

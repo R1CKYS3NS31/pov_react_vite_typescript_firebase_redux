@@ -16,8 +16,9 @@ const ThemeToggleFab = () => {
       <Fab
         color="primary"
         aria-label="toggle theme"
+        size="small"
         onClick={() => toggleTheme()}
-        style={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
+        sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 1000 }}
       >
         {themeType === "dark" ? <LightMode /> : <DarkMode />}
       </Fab>

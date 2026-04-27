@@ -1,5 +1,6 @@
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
 import { useTheme } from "@mui/material/styles";
 import { makePulseGlow } from "../../styles/themes/animations";
 
@@ -10,7 +11,6 @@ import { makePulseGlow } from "../../styles/themes/animations";
 const AppLoadingScreen = () => {
   const theme = useTheme();
   const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary.main;
   const pulseGlow = makePulseGlow(primary);
 
   return (
@@ -25,24 +25,15 @@ const AppLoadingScreen = () => {
       }}
     >
       {/* Animated logo mark */}
-      <Stack
+      <Avatar
+        variant="logo"
         sx={{
-          alignItems: "center",
-          justifyContent: "center",
-          width: 72,
-          height: 72,
-          background: `linear-gradient(135deg, ${primary}, ${secondary})`,
-          borderRadius: 3,
-          fontSize: "2.25rem",
-          fontWeight: 900,
-          color: "primary.contrastText",
-          boxShadow: theme.customShadows?.primary,
           animation: `${pulseGlow} 1.5s ease-in-out infinite`,
           userSelect: "none",
         }}
       >
         P
-      </Stack>
+      </Avatar>
 
       {/* Text block */}
       <Stack

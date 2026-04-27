@@ -7,7 +7,6 @@ import Skeleton from "@mui/material/Skeleton";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
-import {alpha} from "@mui/material/styles";
 import PovCard from "./PovCard";
 
 const PovList = memo(({
@@ -104,36 +103,6 @@ const PovList = memo(({
             color="primary"
             size="large"
             shape="rounded"
-            sx={{
-              '& .MuiPaginationItem-root': {
-                fontWeight: 800,
-                borderRadius: 2,
-                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                border: '1px solid transparent',
-                '&:hover': {
-                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-                  transform: 'translateY(-2px)',
-                },
-              },
-              '& .Mui-selected': {
-                background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary?.main || theme.palette.primary.light} 100%) !important`,
-                color: 'primary.contrastText',
-                boxShadow: (theme) => `0 6px 16px -4px ${alpha(theme.palette.primary.main, 0.5)}`,
-                border: 'none',
-                '&:hover': {
-                  transform: 'translateY(-2px) scale(1.05)',
-                  boxShadow: (theme) => `0 8px 20px -4px ${alpha(theme.palette.primary.main, 0.6)}`,
-                },
-              },
-              '& .MuiPaginationItem-ellipsis': {
-                border: 'none',
-                bgcolor: 'transparent',
-                '&:hover': {
-                  bgcolor: 'transparent',
-                  transform: 'none',
-                }
-              }
-            }}
           />
         </Box>
       )}

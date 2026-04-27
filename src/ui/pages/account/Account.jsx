@@ -33,7 +33,6 @@ const Account = () => {
 
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary?.main ?? theme.palette.primary.light;
 
   /* ── data ── */
   const {
@@ -195,12 +194,7 @@ const Account = () => {
                     variant="contained"
                     startIcon={<AddRounded />}
                     onClick={handleCreateNew}
-                    sx={{
-                      borderRadius: 2.5,
-                      fontWeight: 700,
-                      background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`,
-                      boxShadow: `0 6px 20px -4px ${alpha(primary, 0.5)}`,
-                    }}
+                    sx={{ borderRadius: 2.5 }}
                   >
                     Post Your First PoV
                   </Button>
