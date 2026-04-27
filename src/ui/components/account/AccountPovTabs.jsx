@@ -14,7 +14,6 @@ export const AccountPovTabs = ({ activeTab, onChange, localCount = 0, myCount = 
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary?.main ?? theme.palette.primary.light;
 
   const badgeSx = (tabIndex) => ({
     height: 18,
@@ -46,23 +45,7 @@ export const AccountPovTabs = ({ activeTab, onChange, localCount = 0, myCount = 
         variant="fullWidth"
         value={activeTab}
         onChange={onChange}
-        sx={{
-          width: "100%",
-          "& .MuiTabs-indicator": {
-            height: 3,
-            borderRadius: "3px 3px 0 0",
-            background: `linear-gradient(90deg, ${primary}, ${secondary})`,
-          },
-          "& .MuiTab-root": {
-            minHeight: 44,
-            fontWeight: 700,
-            textTransform: "none",
-            fontSize: "0.875rem",
-            letterSpacing: 0.2,
-            gap: 0.75,
-            transition: "color 0.2s",
-          },
-        }}
+        sx={{ width: "100%" }}
       >
         <Tab
           id="account-tab-local"

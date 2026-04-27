@@ -97,14 +97,10 @@ const PovCard = ({
       <Card
         sx={{
           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          borderRadius: 4,
-          border: "none",
-          boxShadow: (theme) => theme.shadows[1],
-          bgcolor: "background.paper",
           mb: 1.5,
           "&:hover": {
             transform: "translateY(-4px)",
-            boxShadow: (theme) => theme.shadows[4],
+            boxShadow: (theme) => theme.customShadows?.z4 || theme.shadows[4],
           },
         }}
       >

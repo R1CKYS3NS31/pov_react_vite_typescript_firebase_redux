@@ -26,7 +26,6 @@ export const AccountProfileCard = ({
   onSignOut,
 }) => {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
 
   const displayName =
@@ -36,21 +35,7 @@ export const AccountProfileCard = ({
     "Guest User";
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        p: 3,
-        borderRadius: 3,
-        textAlign: "center",
-        bgcolor: isDark
-          ? alpha(theme.palette.background.paper, 0.55)
-          : alpha(theme.palette.background.paper, 0.85),
-        backdropFilter: "blur(20px)",
-        border: "1px solid",
-        borderColor: alpha(theme.palette.divider, 0.5),
-        boxShadow: theme.shadows[2],
-      }}
-    >
+    <Paper variant="glass" sx={{ p: 3, borderRadius: 3, textAlign: "center" }}>
       {/* Avatar + edit button */}
       <Box sx={{ position: "relative", display: "inline-block", mb: 2 }}>
         <Avatar
@@ -136,7 +121,7 @@ export const AccountProfileCard = ({
           color="error"
           fullWidth
           onClick={onSignOut}
-          sx={{ borderRadius: 3, fontWeight: 700, py: 1 }}
+          sx={{ borderRadius: 3, py: 1 }}
         >
           Sign Out
         </Button>
@@ -149,7 +134,7 @@ export const AccountProfileCard = ({
           startIcon={<LoginRounded />}
           color="secondary"
           fullWidth
-          sx={{ borderRadius: 3, fontWeight: 700, py: 1 }}
+          sx={{ borderRadius: 3, py: 1 }}
         >
           Sign In
         </Button>

@@ -44,16 +44,12 @@ const SignIn = () => {
       }}
     >
       <Paper
-        elevation={0}
+        variant="glass"
         sx={{
           p: { xs: 3, md: 4 },
           borderRadius: 4,
           maxWidth: 420,
           width: "100%",
-          bgcolor: alpha(theme.palette.background.paper, 0.7),
-          backdropFilter: "blur(20px)",
-          border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
-          boxShadow: theme.shadows[3],
         }}
       >
         <Stack spacing={3.5}>
@@ -159,14 +155,7 @@ const SignIn = () => {
                 variant="contained"
                 disabled={loading}
                 endIcon={<ArrowForward />}
-                sx={{
-                  py: 1.2,
-                  mt: 1,
-                  borderRadius: 2.5,
-                  fontWeight: 800,
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary?.main || theme.palette.primary.light} 100%)`,
-                  boxShadow: `0 6px 20px -4px ${alpha(theme.palette.primary.main, 0.5)}`,
-                }}
+                sx={{ py: 1.2, mt: 1, borderRadius: 2.5 }}
               >
                 {loading ? "Signing in..." : "Sign In"}
               </Button>

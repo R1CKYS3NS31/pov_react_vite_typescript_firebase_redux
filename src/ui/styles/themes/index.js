@@ -55,6 +55,12 @@ export const theme = (customization = {}) => {
 
   const themes = createTheme(themeOptions);
   themes.components = componentStyleOverrides(themeOption);
-
+  themes.customShadows = {
+    primary: `0 6px 20px -4px ${activeColors.primary.main}80`,
+    secondary: `0 6px 20px -4px ${activeColors.secondary.main}80`,
+    z1: isDark ? "0 2px 12px rgba(0,0,0,0.5)" : "0 2px 12px rgba(0,0,0,0.06)",
+    z2: isDark ? "0 4px 24px rgba(0,0,0,0.55)" : "0 4px 24px rgba(0,0,0,0.08)",
+    z4: isDark ? "0 8px 32px rgba(0,0,0,0.6)" : "0 8px 32px rgba(0,0,0,0.10)",
+  };
   return themes;
 };

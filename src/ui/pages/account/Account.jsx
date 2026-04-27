@@ -230,20 +230,10 @@ const Account = () => {
       <Fab
         id="account-fab-create"
         color="primary"
+        size="large"
         aria-label="create pov"
         onClick={handleCreateNew}
-        sx={{
-          position: "fixed",
-          bottom: 80,
-          right: 16,
-          boxShadow: `0 8px 24px ${alpha(primary, 0.5)}`,
-          background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`,
-          transition: "all 0.25s ease",
-          "&:hover": {
-            transform: "scale(1.06) translateY(-2px)",
-            boxShadow: `0 14px 32px ${alpha(primary, 0.6)}`,
-          },
-        }}
+        sx={{ position: "fixed", bottom: 80, right: 16 }}
       >
         <AddRounded />
       </Fab>

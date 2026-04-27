@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { alpha, useTheme } from "@mui/material/styles";
+
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -23,6 +23,7 @@ import SaveIcon from "@mui/icons-material/SaveRounded";
 import BadgeIcon from "@mui/icons-material/BadgeRounded";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCameraRounded";
 import DeleteIcon from "@mui/icons-material/DeleteRounded";
+import { useTheme } from "@mui/material/styles";
 
 export const AccountSettingsDialog = ({
   open,
@@ -140,37 +141,15 @@ export const AccountSettingsDialog = ({
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="md"
-      fullWidth
-      PaperProps={{ sx: { borderRadius: 3, bgcolor: "background.paper" } }}
-    >
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+
       <DialogTitle
         component={Stack}
-        direction={"row"} 
-        sx={{
-          m: 0,
-          p: 3,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+        direction="row"
+        sx={{ m: 0, p: 3, justifyContent: "space-between", alignItems: "center" }}
       >
-        <Typography variant="h4" fontWeight={800}>
-          Account Settings
-        </Typography>
-        <IconButton
-          onClick={onClose}
-          size="small"
-          sx={{
-            color: "text.secondary",
-            "&:hover": {
-              color: "text.primary",
-              bgcolor: alpha(theme.palette.text.primary, 0.05),
-            },
-          }}
-        >
+        <Typography variant="h4" fontWeight={800}>Account Settings</Typography>
+        <IconButton onClick={onClose} size="small" sx={{ color: "text.secondary" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -179,25 +158,23 @@ export const AccountSettingsDialog = ({
         <Stack spacing={3}>
           {/* PROFILE SECTION */}
           <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 800,
-                mb: 3,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: "center", mb: 3 }}
             >
-              <BadgeIcon color="primary" /> Public Profile Info
-            </Typography>
+              <BadgeIcon color="primary" fontSize="small" />
+              <Typography variant="h6" fontWeight={800}>
+                Public Profile Info
+              </Typography>
+            </Stack>
 
             <Stack
               direction={{ xs: "column", sm: "row" }}
               spacing={4}
               sx={{ mb: 4, alignItems:"center" }}
             >
-              <Box sx={{ position: "relative" }}>
+              <Stack sx={{ position: "relative" }}>
                 <Avatar
                   src={profileData.displayPicture}
                   sx={{
@@ -231,7 +208,7 @@ export const AccountSettingsDialog = ({
                     onChange={handleAvatarChange}
                   />
                 </IconButton>
-              </Box>
+              </Stack>
               <Box>
                 <Typography variant="subtitle1" fontWeight={700}>
                   Profile Picture
@@ -284,18 +261,16 @@ export const AccountSettingsDialog = ({
           </Box>
           <Divider />
           <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 800,
-                mb: 3,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: "center", mb: 3 }}
             >
-              <EmailIcon color="primary" /> Contact Details
-            </Typography>
+              <EmailIcon color="primary" fontSize="small" />
+              <Typography variant="h6" fontWeight={800}>
+                Contact Details
+              </Typography>
+            </Stack>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, sm: 8 }}>
                 <TextField
@@ -318,19 +293,16 @@ export const AccountSettingsDialog = ({
 
           {/* SECURITY SECTION */}
           <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 800,
-                mb: 3,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                color: "error.main",
-              }}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: "center", mb: 3 }}
             >
-              <SecurityIcon /> Account Security
-            </Typography>
+              <SecurityIcon color="error" fontSize="small" />
+              <Typography variant="h6" fontWeight={800} color="error.main">
+                Account Security
+              </Typography>
+            </Stack>
             <Box sx={{ mt: 4 }}>
               <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>
                 Change Password
@@ -404,7 +376,7 @@ export const AccountSettingsDialog = ({
                     variant="outlined"
                     color="error"
                     onClick={handleUpdatePassword}
-                    sx={{ mt: 1, borderRadius: 2, fontWeight: 700 }}
+                    sx={{ mt: 1 }}
                     disabled={
                       !securityData.currentPassword ||
                       !securityData.newPassword ||
@@ -423,19 +395,16 @@ export const AccountSettingsDialog = ({
           <Divider />
           {/* LEAVE DELETE POV ACCOUNT */}
           <Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 800,
-                mb: 3,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                color: "error.main",
-              }}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: "center", mb: 3 }}
             >
-              <DeleteIcon /> Delete Account
-            </Typography>
+              <DeleteIcon color="error" fontSize="small" />
+              <Typography variant="h6" fontWeight={800} color="error.main">
+                Delete Account
+              </Typography>
+            </Stack>
             <Box sx={{ mt: 4 }}>
               <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>
                 Delete Account
@@ -450,7 +419,7 @@ export const AccountSettingsDialog = ({
                   if (deleteAccount) deleteAccount();
                   onClose();
                 }}
-                sx={{ mt: 1, borderRadius: 2, fontWeight: 700 }}
+                sx={{ mt: 1 }}
                 disabled={!isAuthenticated || loading}
               >
                 Delete Account
@@ -460,13 +429,10 @@ export const AccountSettingsDialog = ({
         </Stack>
       </DialogContent>
       <Divider />
-      <DialogActions
-        sx={{ p: 3, bgcolor: alpha(theme.palette.background.default, 0.5) }}
-      >
+      <DialogActions sx={{ p: 3 }}>
         <Button
           onClick={onClose}
           disabled={loading}
-          sx={{ fontWeight: 700, borderRadius: 2 }}
         >
           Cancel
         </Button>
@@ -482,7 +448,7 @@ export const AccountSettingsDialog = ({
               <SaveIcon />
             )
           }
-          sx={{ fontWeight: 700, borderRadius: 2, px: 3 }}
+          sx={{ px: 3 }}
         >
           {loading ? "Saving..." : "Save Changes"}
         </Button>

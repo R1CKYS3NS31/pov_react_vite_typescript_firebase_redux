@@ -1,7 +1,6 @@
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
-import { alpha } from "@mui/material/styles";
 import Search from "@mui/icons-material/Search";
 import Clear from "@mui/icons-material/Clear";
 
@@ -9,6 +8,7 @@ const PovSearchBar = ({ searchQuery, setSearchQuery }) => {
   return (
     <Paper
       component="form"
+      variant="glass"
       onSubmit={(e) => e.preventDefault()}
       sx={{
         p: "2px 4px",
@@ -17,11 +17,6 @@ const PovSearchBar = ({ searchQuery, setSearchQuery }) => {
         width: "100%",
         mb: 4,
         borderRadius: 4,
-        bgcolor: (theme) => alpha(theme.palette.background.paper, 0.7),
-        backdropFilter: "blur(10px)",
-        boxShadow: (theme) => theme.shadows[2],
-        border: "1px solid",
-        borderColor: "divider",
         transition: "all 0.3s ease",
         "&:focus-within": {
           boxShadow: (theme) => theme.shadows[6],

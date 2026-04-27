@@ -62,14 +62,7 @@ const PovForm = ({
   };
 
   return (
-    <Card
-      sx={{
-        position: "relative",
-        border: "none",
-        boxShadow: (theme) => theme.shadows[4],
-        bgcolor: "background.paper",
-      }}
-    >
+    <Card sx={{ position: "relative" }}>
       {loading && (
         <Box
           sx={{
@@ -169,7 +162,12 @@ const PovForm = ({
       </CardContent>
 
       <CardActions sx={{ px: 2, pb: 2, pt: 0 }}>
-        <Grid container spacing={2} alignItems="center" sx={{ width: "100%" }}>
+        <Grid container
+          spacing={2}
+          sx={{
+            alignItems: "center", width: "100%"
+          }}
+        >
           <Grid size={{ xs: 12, sm: "auto" }} sx={{ mr: "auto" }}>
             <Stack
               direction="row"

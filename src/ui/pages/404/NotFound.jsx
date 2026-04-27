@@ -1,23 +1,25 @@
-import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import HomeRounded from "@mui/icons-material/HomeRounded";
+import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
+import { floatAnimation } from "../../styles/themes/animations";
 
 const NotFound = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   return (
-    <Box
+    <Stack
       sx={{
         minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         bgcolor: "background.default",
         p: 3,
+        alignItems: "center",
+        justifyContent: "center"
       }}
     >
       <Container maxWidth="sm" sx={{ textAlign: "center" }}>
@@ -28,30 +30,22 @@ const NotFound = () => {
             fontSize: { xs: "6rem", sm: "10rem" },
             fontWeight: 950,
             lineHeight: 1,
-            background: "linear-gradient(135deg, #f6c143 30%, #d6884a 100%)",
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
             mb: 2,
             userSelect: "none",
-            animation: "float 3s ease-in-out infinite",
-            "@keyframes float": {
-              "0%, 100%": { transform: "translateY(0)" },
-              "50%": { transform: "translateY(-15px)" },
-            },
+            animation: `${floatAnimation} 3s ease-in-out infinite`,
           }}
         >
           404
         </Typography>
 
-        <Typography
-          variant="h4"
-          fontWeight={900}
-          gutterBottom
-          color="text.primary"
-        >
+        <Typography variant="h4" fontWeight={900} gutterBottom color="text.primary">
           Page Not Found
         </Typography>
+
         <Typography
           variant="body1"
           color="text.secondary"
@@ -61,35 +55,28 @@ const NotFound = () => {
           may have been moved, deleted, or perhaps never existed.
         </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
+        <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap", justifyContent: "center" }}>
           <Button
             variant="contained"
             size="large"
-            startIcon={<HomeIcon />}
+            startIcon={<HomeRounded />}
             onClick={() => navigate("/")}
-            sx={{ px: 4, borderRadius: 2, fontWeight: 700 }}
+            sx={{ px: 4, borderRadius: 2 }}
           >
             Go Home
           </Button>
           <Button
             variant="outlined"
             size="large"
-            startIcon={<ArrowBackIcon />}
+            startIcon={<ArrowBackRounded />}
             onClick={() => navigate(-1)}
-            sx={{ px: 4, borderRadius: 2, fontWeight: 700 }}
+            sx={{ px: 4, borderRadius: 2 }}
           >
             Go Back
           </Button>
-        </Box>
+        </Stack>
       </Container>
-    </Box>
+    </Stack>
   );
 };
 

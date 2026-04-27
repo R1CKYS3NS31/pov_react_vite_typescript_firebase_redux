@@ -1,7 +1,7 @@
 import { alpha, useTheme } from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import PovList from "../pov/PovList";
 
 /**
@@ -38,27 +38,20 @@ export const AccountPovPanel = ({
   emptyMessage,
 }) => {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
 
   const isEmpty = !loading && items.length === 0;
 
   return (
-    <Box
-      id={id}
-      role="tabpanel"
-      aria-labelledby={labelledBy}
-      sx={{ pt: 1 }}
-    >
+    <Box id={id} role="tabpanel" aria-labelledby={labelledBy} sx={{ pt: 1 }}>
       {isEmpty ? (
-        <Box
+        <Stack
+          spacing={1.5}
           sx={{
-            display: "flex",
-            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             minHeight: 280,
-            bgcolor: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)",
+            bgcolor: "action.hover",
             borderRadius: 4,
             border: "2px dashed",
             borderColor: "divider",
@@ -67,11 +60,23 @@ export const AccountPovPanel = ({
           }}
         >
           {emptyIcon && (
-            <Box sx={{ fontSize: 44, mb: 1.5, color: alpha(primary, 0.35), display: "flex" }}>
+            <Box
+              sx={{
+                fontSize: 44,
+                mb: 1.5,
+                color: alpha(primary, 0.35),
+                display: "flex",
+              }}
+            >
               {emptyIcon}
             </Box>
           )}
-          <Typography variant="h6" fontWeight={700} color="text.secondary" gutterBottom>
+          <Typography
+            variant="h6"
+            fontWeight={700}
+            color="text.secondary"
+            gutterBottom
+          >
             {emptyTitle}
           </Typography>
           <Typography
@@ -82,7 +87,7 @@ export const AccountPovPanel = ({
             {emptyDescription}
           </Typography>
           {emptyAction}
-        </Box>
+        </Stack>
       ) : (
         <PovList
           povs={items}

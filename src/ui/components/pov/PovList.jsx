@@ -55,28 +55,27 @@ const PovList = memo(({
 
   if (!povs || povs.length === 0) {
     return (
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          flexDirection: 'column',
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '300px',
-          bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+      <Stack
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "300px",
+          bgcolor: "action.hover",
           borderRadius: 4,
-          border: '2px dashed',
-          borderColor: 'divider',
-          textAlign: 'center',
-          p: 4
+          border: "2px dashed",
+          borderColor: "divider",
+          textAlign: "center",
+          p: 4,
         }}
       >
-        <Typography variant="h6" fontWeight={700} color="textSecondary" gutterBottom>
+        <Typography variant="h6" fontWeight={700} color="text.secondary">
           Nothing to see here
         </Typography>
-        <Typography variant="body1" color="textSecondary" sx={{ opacity: 0.7 }}>
+        <Typography variant="body1" color="text.secondary" sx={{ opacity: 0.7 }}>
           {emptyMessage}
         </Typography>
-      </Box>
+      </Stack>
     );
   }
 

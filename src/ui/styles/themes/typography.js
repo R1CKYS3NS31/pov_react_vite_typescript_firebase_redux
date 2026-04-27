@@ -81,9 +81,17 @@ export const themeTypography = (theme) => {
     },
     button: {
       textTransform: "none",
-      fontWeight: 600,
+      fontWeight: 700,
       letterSpacing: "0.02em",
       fontSize: "0.8125rem",
+    },
+    overline: {
+      fontSize: "0.6875rem",
+      fontWeight: 700,
+      letterSpacing: "0.1em",
+      textTransform: "uppercase",
+      lineHeight: 1.5,
+      color: theme.text?.secondary,
     },
   };
 };

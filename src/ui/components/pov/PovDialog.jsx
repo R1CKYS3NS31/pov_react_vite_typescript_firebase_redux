@@ -1,6 +1,5 @@
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import { useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import CloseRounded from "@mui/icons-material/CloseRounded";
@@ -8,7 +7,6 @@ import PovForm from "./PovForm";
 import { useAccount } from "../../../hooks/useAccount";
 
 export const PovDialog = ({ open, onClose, povToEdit = null, isLocal }) => {
-  const theme = useTheme();
 
   const {
     account,
@@ -72,16 +70,6 @@ export const PovDialog = ({ open, onClose, povToEdit = null, isLocal }) => {
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      slotProps={{
-        paper: {
-          sx: {
-            borderRadius: 4,
-            bgcolor: "background.paper",
-            border: "none",
-            boxShadow: theme.shadows[10],
-          },
-        },
-      }}
     >
       <Box sx={{ position: "absolute", right: 8, top: 8, zIndex: 11 }}>
         <IconButton

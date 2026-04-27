@@ -34,8 +34,12 @@ export const themePalette = (theme) => {
     text: {
       ...theme.colors?.text,
     },
-    background: { 
+    background: {
       ...theme.colors?.background,
+    },
+    divider: theme.divider,
+    info: {
+      ...theme.colors?.info,
     },
   };
 };

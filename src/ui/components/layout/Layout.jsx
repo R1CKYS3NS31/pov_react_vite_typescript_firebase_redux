@@ -1,4 +1,3 @@
-import { alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";
@@ -42,19 +41,7 @@ const Layout = () => {
       }}
     >
       <Grid size={{xs: 12}}> 
-        <AppBar
-        position="fixed"
-        elevation={0}
-        sx={{
-          top: 0,
-          bgcolor: "background.paper",
-          border: "none",
-          boxShadow: (theme) =>
-            `0 12px 24px -12px ${alpha(theme.palette.common.black, theme.palette.mode === "dark" ? 0.3 : 0.05)}`,
-          color: "text.primary",
-          backdropFilter: "blur(10px)",
-        }}
-      >
+        <AppBar position="fixed" elevation={0} sx={{ top: 0 }}>
         <Toolbar component={Stack} direction={"row"} 
           variant="dense"
           disableGutters
@@ -162,7 +149,7 @@ const Layout = () => {
         <MenuItem
           component={Link}
           to={isAuthenticated ? "/account?tab=1" : "/account?tab=0"}
-          sx={{ px: 2, borderRadius: 2, fontWeight: 700 }}
+          sx={{ px: 2, borderRadius: 2 }}
         >
           <AccountCircle
             fontSize="small"
@@ -176,12 +163,7 @@ const Layout = () => {
         {isAuthenticated ? (
           <MenuItem
             onClick={logout}
-            sx={{
-              px: 2,
-              borderRadius: 2,
-              fontWeight: 700,
-              color: "error.main",
-            }}
+            sx={{ color: "error.main" }}
           >
             <Logout sx={{ mr: 2, fontSize: 20 }} /> Sign Out
           </MenuItem>
@@ -189,12 +171,7 @@ const Layout = () => {
           <MenuItem
             component={Link}
             to="/signin"
-            sx={{
-              px: 2,
-              borderRadius: 2,
-              fontWeight: 700,
-              color: "primary.main",
-            }}
+            sx={{ color: "primary.main" }}
           >
             <Login sx={{ mr: 2, fontSize: 20 }} />Sign In / Support PoV
           </MenuItem>
