@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
@@ -16,6 +15,9 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import Share from "@mui/icons-material/Share";
@@ -23,7 +25,16 @@ import { alpha } from "@mui/material/styles";
 import SharePovModal from "./SharePovModal";
 import PublicRounded from "@mui/icons-material/PublicRounded";
 import PublicOffRounded from "@mui/icons-material/PublicOffRounded";
-import { selectUserAccount } from "../../../service/redux/selectors/userAccountSelector";
+import AddReactionOutlined from "@mui/icons-material/AddReactionOutlined";
+import EditNote from "@mui/icons-material/EditNote";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import FavoriteRounded from "@mui/icons-material/FavoriteRounded";
+import DeleteSweep from "@mui/icons-material/DeleteSweep";
+import FileCopy from "@mui/icons-material/FileCopy";
+import { useAccount } from "../../../hooks/useAccount";
+import { formatNumber } from "../../../utils/formatNumber";
+import { DialogCommentPoV } from "./DialogCommentPoV";
+import Comment from "@mui/icons-material/Comment";
 
 const PovCard = ({
   pov,
@@ -35,9 +46,122 @@ const PovCard = ({
 }) => {
   const navigate = useNavigate();
   // Read account from Redux — zero-cost synchronous selector, no Firestore fetch.
-  const account = useSelector(selectUserAccount);
+  const { handleLike, handleUnlike, handleComment, handleUncomment, account } =
+    useAccount();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [openCommentPoVDialog, setOpenCommentPoVDialog] = useState(false);
+  const [speedActions, setSpeedActions] = useState([
+    { icon: <FileCopy />, name: "Copy" },
+    { icon: <Share />, name: "Share" },
+    { icon: <Comment />, name: "Comment" },
+  ]);
+
+  useEffect(() => {
+    async () => {
+      const likeFound = pov.likes.find(
+        (like) => account && account.id === like,
+      );
+      account && account.id === pov.author.id
+        ? setSpeedActions([
+            {
+              icon: <DeleteSweep />,
+              name: "Delete",
+            },
+            { icon: <EditNote />, name: "Edit" },
+            pov.published
+              ? { icon: <PublicRounded />, name: "Unpublish" }
+              : { icon: <PublicOffRounded />, name: "Publish" },
+            { icon: <Share />, name: "Share" },
+            { icon: <Comment />, name: "Comment" },
+            likeFound
+              ? {
+                  icon: <FavoriteRounded />,
+                  name: `Unlike (${formatNumber(pov.likes.length)})`,
+                }
+              : {
+                  icon: <FavoriteBorder />,
+                  // name: `Like (${formatNumber(pov.likeCount)})`,
+                  name: `Like (${formatNumber(pov.likes.length)})`,
+                },
+          ])
+        : setSpeedActions([
+            { icon: <FileCopy />, name: "Copy" },
+            { icon: <Share />, name: "Share" },
+            { icon: <Comment />, name: "Comment" },
+            likeFound
+              ? {
+                  icon: <FavoriteRounded />,
+                  name: `Unlike (${formatNumber(pov.likes.length)})`,
+                }
+              : {
+                  icon: <FavoriteBorder />,
+                  // name: `Like (${formatNumber(pov.likeCount)})`,
+                  name: `Like (${formatNumber(pov.likes.length)})`,
+                },
+          ]);
+    };
+  }, [account, pov]);
+
+  const handleCommentPoV = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    formData.append("povId", pov.id);
+    const formJson = Object.fromEntries(formData.entries());
+
+    await handleComment(pov.id, account.id, formJson)
+      .then(() => {
+        setOpenCommentPoVDialog(false);
+      })
+      .catch((error) => {
+        console.error("Error commenting on PoV:", error);
+      });
+  };
+
+  const handleClickAction = (action) => {
+    switch (action) {
+      case "Delete":
+        setDeleteDialogOpen(true);
+        break;
+
+      case "Edit":
+        onEdit(pov);
+        break;
+
+      case "Publish":
+        onPublish(pov.id);
+        break;
+
+      case "Unpublish":
+        onPublish(pov.id);
+        break;
+
+      case "Share":
+        // console.log(action);
+        handleShare();
+        break;
+
+      case "Copy":
+        console.log(action);
+        break;
+
+      case `Like (${formatNumber(pov.likeCount)})`:
+        handleLike();
+        break;
+
+      case `UnLike (${formatNumber(pov.likeCount)})`:
+        handleUnlike();
+        break;
+
+      case "Comment":
+        setOpenCommentPoVDialog(true);
+        break;
+
+      default:
+        break;
+    }
+  };
 
   const handleAuthorClick = (e) => {
     e.stopPropagation();
@@ -161,7 +285,7 @@ const PovCard = ({
                 </Box>
 
                 {/* Contextual Actions (Top Right) */}
-                <Box sx={{ display: "flex", gap: 0.5, mt: -0.5, mr: -1 }}>
+                {/* <Box sx={{ display: "flex", gap: 0.5, mt: -0.5, mr: -1 }}>
                   <Tooltip title="Share PoV">
                     <IconButton
                       size="small"
@@ -242,7 +366,7 @@ const PovCard = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                </Box>
+                </Box> */}
               </Box>
 
               {/* POV Title */}
@@ -312,6 +436,30 @@ const PovCard = ({
           </Grid>
         </CardContent>
       </Card>
+      <SpeedDial
+        FabProps={{ size: "small" }}
+        direction="left"
+        ariaLabel="SpeedDial openIcon"
+        sx={{
+          // transform: "translateZ(0px)",
+          position: "relative",
+          bottom: "0px",
+          right: "0px",
+        }}
+        icon={<SpeedDialIcon openIcon={<AddReactionOutlined />} />}
+      >
+        {speedActions.map((action) => (
+          <SpeedDialAction
+            slotProps={{
+              fab: { size: "small" },
+              tooltip: { title: action.name },
+            }}
+            onClick={() => handleClickAction(action.name)}
+            key={action.name}
+            icon={action.icon}
+          />
+        ))}
+      </SpeedDial>
 
       {/* Delete Confirmation Dialog */}
       <Dialog
@@ -354,6 +502,15 @@ const PovCard = ({
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* comment PoV */}
+      <DialogCommentPoV
+        open={openCommentPoVDialog}
+        handleClose={() => setOpenCommentPoVDialog(false)}
+        handleSubmit={handleCommentPoV}
+        handleUncomment={handleUncomment}
+        pov={pov}
+      />
 
       <SharePovModal
         open={shareDialogOpen}

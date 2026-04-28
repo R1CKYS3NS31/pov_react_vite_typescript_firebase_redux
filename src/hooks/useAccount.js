@@ -13,6 +13,10 @@ import {
   savePoVFirebase,
   deletePoVFirebase,
   updatePoVFirebase,
+  likePoVFirebase,
+  unLikePoVFirebase,
+  commentOnPoVFirebase,
+  uncommentPoVFirebase,
 } from "../service/firebase/controller/pov-firebase";
 import { selectUserAccount } from "../service/redux/selectors/userAccountSelector";
 import {
@@ -215,6 +219,66 @@ export const useAccount = () => {
     [dispatch],
   );
 
+  const handleLike = useCallback(
+    (povId, accountId) => {
+      setUpdateLoading(true);
+      return likePoVFirebase(povId, accountId)
+        .then((response) => {
+          dispatch(editMyPov(response));
+          notify("PoV liked successfully!", "success");
+          return response;
+        })
+        .catch(handleApiError)
+        .finally(() => setUpdateLoading(false));
+    },
+    [handleApiError, notify, dispatch],
+  );
+
+  const handleUnlike = useCallback(
+    (povId, accountId) => {
+      setUpdateLoading(true);
+      return unLikePoVFirebase(povId, accountId)
+        .then((response) => {
+          dispatch(editMyPov(response));
+          notify("PoV unliked successfully!", "success");
+          return response;
+        })
+        .catch(handleApiError)
+        .finally(() => setUpdateLoading(false));
+    },
+    [handleApiError, notify, dispatch],
+  );
+
+  const handleComment = useCallback(
+    (povId, accountId, comment) => {
+      setUpdateLoading(true);
+      return commentOnPoVFirebase(povId, accountId, comment)
+        .then((response) => {
+          dispatch(editMyPov(response));
+          notify("PoV commented successfully!", "success");
+          return response;
+        })
+        .catch(handleApiError)
+        .finally(() => setUpdateLoading(false));
+    },
+    [handleApiError, notify, dispatch],
+  );
+
+  const handleUncomment = useCallback(
+    (povId, accountId) => {
+      setUpdateLoading(true);
+      return uncommentPoVFirebase(povId, accountId)
+        .then((response) => {
+          dispatch(editMyPov(response));
+          notify("PoV uncommented successfully!", "success");
+          return response;
+        })
+        .catch(handleApiError)
+        .finally(() => setUpdateLoading(false));
+    },
+    [handleApiError, notify, dispatch],
+  );
+
   const loading =
     userAccountLoading ||
     updateUserAccountLoading ||
@@ -234,6 +298,10 @@ export const useAccount = () => {
     createPovLocal,
     updatePovLocal,
     deletePovLocal,
+    handleLike,
+    handleUnlike,
+    handleComment,
+    handleUncomment,
     loading,
     notification,
     closeNotification,
