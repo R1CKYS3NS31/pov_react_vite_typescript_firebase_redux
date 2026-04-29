@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,28 +10,16 @@ import { usePov } from "../../../hooks/usePov";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState("createdAt");
 
-  const { allPovs, searchedPovs, loading } = usePov({
+  const { povs, hasMore, loading, loadingMore, loadMore } = usePov({
     search: searchQuery,
-    page,
-    size: 20,
+    size: 15,
     sortBy,
   });
 
-  const displayPovs = searchQuery ? searchedPovs : allPovs;
-  const povItems = displayPovs?.content ?? [];
-  const totalPages = displayPovs?.totalPages ?? 1;
-
   const handleSearch = (query) => {
     setSearchQuery(query);
-    setPage(0);
-  };
-
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -45,7 +32,7 @@ const Home = () => {
           position: "sticky",
           top: { xs: 50, sm: 60 },
           zIndex: 100,
-          // bgcolor: "background.default",
+          bgcolor: "background.default",
           pt: 1,
           pb: 2,
           alignItems: "center",
@@ -60,10 +47,7 @@ const Home = () => {
         >
           <Select
             value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setPage(0);
-            }}
+            onChange={(e) => setSortBy(e.target.value)}
             displayEmpty
             inputProps={{ "aria-label": "Sort By" }}
             sx={{ borderRadius: 2, fontWeight: 600 }}
@@ -75,17 +59,31 @@ const Home = () => {
       </Stack>
 
       <PovList
-        povs={povItems}
+        povs={povs}
         loading={loading}
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
+        hasMore={hasMore}
+        onLoadMore={loadMore}
+        loadingMore={loadingMore}
         emptyMessage={
           searchQuery
             ? `No POVs found for "${searchQuery}"`
             : "No perspectives shared yet — be the first!"
         }
       />
+
+      {/* <ScrollTop>
+        <Fab
+          size="medium"
+          color="primary"
+          aria-label="scroll back to top"
+          sx={{
+            boxShadow: (theme) => theme.shadows[4],
+            '&:hover': { transform: 'scale(1.1)' }
+          }}
+        >
+          <KeyboardArrowUpIcon />
+        </Fab>
+      </ScrollTop> */}
     </Stack>
   );
 };

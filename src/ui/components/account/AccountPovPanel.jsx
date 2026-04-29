@@ -25,8 +25,7 @@ import PovList from "../pov/PovList";
 export const AccountPovPanel = ({
   id,
   labelledBy,
-  items = [],
-  totalPages = 1,
+  items,
   loading = false,
   emptyIcon,
   emptyTitle,
@@ -40,7 +39,7 @@ export const AccountPovPanel = ({
   const theme = useTheme();
   const primary = theme.palette.primary.main;
 
-  const isEmpty = !loading && items.length === 0;
+  const isEmpty = !loading && items?.empty;
 
   return (
     <Box id={id} role="tabpanel" aria-labelledby={labelledBy} sx={{ pt: 1 }}>
@@ -95,7 +94,6 @@ export const AccountPovPanel = ({
           onEdit={onEdit}
           onDelete={onDelete}
           onPublish={onPublish}
-          totalPages={totalPages}
           emptyMessage={emptyMessage}
         />
       )}

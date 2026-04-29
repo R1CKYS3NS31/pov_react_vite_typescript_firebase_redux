@@ -37,6 +37,7 @@ import {
   editPoVLocal,
   removePovLocal,
 } from "../service/redux/slices/pov/povLocalSlice";
+import { editPoV } from "../service/redux/slices/pov/povSlice";
 
 export const useAccount = () => {
   const dispatch = useDispatch();
@@ -79,7 +80,7 @@ export const useAccount = () => {
   }, [fetchedUserAccount, authAccount, dispatch]);
 
   useEffect(() => {
-    if (myPoVsData && !myPoVsData?.empty) {
+    if (myPoVsData) {
       dispatch(setMyPovs(myPoVsData));
     }
   }, [myPoVsData, dispatch]);
@@ -225,6 +226,7 @@ export const useAccount = () => {
       return likePoVFirebase(povId, accountId)
         .then((response) => {
           dispatch(editMyPov(response));
+          dispatch(editPoV(response));
           notify("PoV liked successfully!", "success");
           return response;
         })
@@ -240,6 +242,7 @@ export const useAccount = () => {
       return unLikePoVFirebase(povId, accountId)
         .then((response) => {
           dispatch(editMyPov(response));
+          dispatch(editPoV(response));
           notify("PoV unliked successfully!", "success");
           return response;
         })
@@ -250,11 +253,12 @@ export const useAccount = () => {
   );
 
   const handleComment = useCallback(
-    (povId, accountId, comment) => {
+    (povId, accountObj, comment) => {
       setUpdateLoading(true);
-      return commentOnPoVFirebase(povId, accountId, comment)
+      return commentOnPoVFirebase(povId, accountObj, comment)
         .then((response) => {
           dispatch(editMyPov(response));
+          dispatch(editPoV(response));
           notify("PoV commented successfully!", "success");
           return response;
         })
@@ -265,11 +269,12 @@ export const useAccount = () => {
   );
 
   const handleUncomment = useCallback(
-    (povId, accountId) => {
+    (povId, commentId) => {
       setUpdateLoading(true);
-      return uncommentPoVFirebase(povId, accountId)
+      return uncommentPoVFirebase(povId, commentId)
         .then((response) => {
           dispatch(editMyPov(response));
+          dispatch(editPoV(response));
           notify("PoV uncommented successfully!", "success");
           return response;
         })
@@ -304,6 +309,7 @@ export const useAccount = () => {
     handleUncomment,
     loading,
     notification,
+    notify,
     closeNotification,
     updateAccount: handleUpdateUserAccount,
     deleteAccount: handleDeleteUserAccount,

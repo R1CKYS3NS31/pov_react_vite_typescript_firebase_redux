@@ -18,6 +18,7 @@ export const savePoVFirebase = async (pov = {}) => {
   const { title, description, points, author } = pov;
   const povData = {
     title: title || "",
+    titleLower: (title || "").toLowerCase(), // For case-insensitive search
     description: description || "",
     points: points || "", // points of view from the author - string
     author: author || "",
@@ -35,14 +36,21 @@ export const savePoVFirebase = async (pov = {}) => {
 };
 
 /**
- * Get all PoVs with populated authors.
+ * Get all PoVs with populated authors using cursor pagination.
  */
 export const getPoVsFirebase = async ({
-  page = 0,
   size = 12,
   sortBy = "createdAt",
+  sortOrder = "desc",
+  lastVisible = null,
 } = {}) => {
-  return await loadDocsData(collectionName, page, size, sortBy)
+  return await loadDocsData(
+    collectionName,
+    size,
+    sortBy,
+    sortOrder,
+    lastVisible,
+  )
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
       return await Promise.all(populatePromises).then((populatedDocs) => ({
@@ -57,16 +65,16 @@ export const getPoVsFirebase = async ({
 };
 
 /**
- * Get published PoVs with populated authors.
+ * Get published PoVs with populated authors using cursor pagination.
  */
 export const getPoVsPublishedFirebase = async ({
-  page = 0,
   size = 12,
   sortBy = "createdAt",
+  sortOrder = "desc",
+  lastVisible = null,
 } = {}) => {
   return await loadDocsDataWhere(
     collectionName,
-    page,
     size,
     [
       {
@@ -76,6 +84,8 @@ export const getPoVsPublishedFirebase = async ({
       },
     ],
     sortBy,
+    sortOrder,
+    lastVisible,
   )
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
@@ -91,26 +101,29 @@ export const getPoVsPublishedFirebase = async ({
 };
 
 /**
- * Search published PoVs by title.
+ * Search published PoVs by title using titleLower and cursor pagination.
  */
-export const searchPoVsByTitleFirebase = async (
-  title,
-  { page = 0, size = 12, sortBy = "createdAt" } = {},
-) => {
+export const searchPoVsByTitleFirebase = async ({
+  searchTitle,
+  size = 12,
+  sortBy = "createdAt",
+  sortOrder = "desc",
+  lastVisible = null,
+} = {}) => {
+  const searchTerm = (searchTitle || "").toLowerCase();
   return await loadDocsDataWhere(
     collectionName,
-    page,
     size,
     [
       {
-        field: "title",
+        field: "titleLower",
         operator: ">=", // prefix search
-        value: title,
+        value: searchTerm,
       },
       {
-        field: "title",
+        field: "titleLower",
         operator: "<=",
-        value: title + "\uf8ff",
+        value: searchTerm + "\uf8ff",
       },
       {
         field: "published",
@@ -119,6 +132,8 @@ export const searchPoVsByTitleFirebase = async (
       },
     ],
     sortBy,
+    sortOrder,
+    lastVisible,
   )
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
@@ -134,15 +149,19 @@ export const searchPoVsByTitleFirebase = async (
 };
 
 /**
- * Get my PoVs (published or not).
+ * Get my PoVs (published or not) using cursor pagination.
  */
 export const getMyPoVsFirebase = async (
   authorId,
-  { page = 0, size = 12, sortBy = "createdAt" } = {},
+  {
+    size = 12,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+    lastVisible = null,
+  } = {},
 ) => {
   return await loadDocsDataWhere(
     collectionName,
-    page,
     size,
     [
       {
@@ -152,6 +171,8 @@ export const getMyPoVsFirebase = async (
       },
     ],
     sortBy,
+    sortOrder,
+    lastVisible,
   )
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
@@ -167,15 +188,19 @@ export const getMyPoVsFirebase = async (
 };
 
 /**
- * Get PoVs by author.
+ * Get PoVs by author using cursor pagination.
  */
 export const getPoVsByAuthorFirebase = async (
   authorId,
-  { page = 0, size = 12, sortBy = "createdAt" } = {},
+  {
+    size = 12,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+    lastVisible = null,
+  } = {},
 ) => {
   return await loadDocsDataWhere(
     collectionName,
-    page,
     size,
     [
       {
@@ -190,6 +215,8 @@ export const getPoVsByAuthorFirebase = async (
       },
     ],
     sortBy,
+    sortOrder,
+    lastVisible,
   )
     .then(async (snapshot) => {
       const populatePromises = snapshot.content.map((doc) => povPopulate(doc));
@@ -220,7 +247,11 @@ export const getPoVFirebase = async (povId) => {
  * Update PoV.
  */
 export const updatePoVFirebase = async (povId, pov) => {
-  return await setDocData(collectionName, povId, pov)
+  const updatedPov = {
+    ...pov,
+    titleLower: (pov.title || "").toLowerCase(),
+  };
+  return await setDocData(collectionName, povId, updatedPov)
     .then(async () => await getPoVFirebase(povId))
     .catch((error) => {
       console.warn(`Failed to update PoV: `, error);
@@ -286,13 +317,21 @@ export const unLikePoVFirebase = async (povId, userId) => {
     });
 };
 
-export const commentOnPoVFirebase = async (povId, userId, commentText) => {
+export const commentOnPoVFirebase = async (povId, account, commentData) => {
   return await getPoVFirebase(povId)
     .then(async (pov) => {
       const newComment = {
-        // id: crypto.randomUUID(),
-        postedBy: userId,
-        text: commentText,
+        id: Date.now(),
+        postedBy: {
+          id: account.id || account.uid,
+          name: account.name || {
+            first: "Guest",
+            last: "User",
+            full: "Guest User",
+          },
+          displayPicture: account.displayPicture || "",
+        },
+        comment: commentData.comment,
         postedAt: Date.now(),
       };
 
@@ -317,11 +356,11 @@ export const commentOnPoVFirebase = async (povId, userId, commentText) => {
     });
 };
 
-export const uncommentPoVFirebase = async (povId, postedBy) => {
+export const uncommentPoVFirebase = async (povId, commentId) => {
   return await getPoVFirebase(povId)
     .then(async (pov) => {
       const updatedComments = (pov.comments || []).filter(
-        (comment) => comment.postedBy !== postedBy,
+        (comment) => comment.id !== commentId,
       );
       return await updateDocData(
         collectionName,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -6,7 +6,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -18,8 +17,6 @@ import Stack from "@mui/material/Stack";
 import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
-import Delete from "@mui/icons-material/Delete";
-import Edit from "@mui/icons-material/Edit";
 import Share from "@mui/icons-material/Share";
 import { alpha } from "@mui/material/styles";
 import SharePovModal from "./SharePovModal";
@@ -40,68 +37,75 @@ const PovCard = ({
   pov,
   onDelete,
   onEdit,
-  onPublish,
-  showActions = true,
-  isLoading = false,
+  // onPublish,
+  // showActions = true,
+  loading = false,
 }) => {
   const navigate = useNavigate();
   // Read account from Redux — zero-cost synchronous selector, no Firestore fetch.
-  const { handleLike, handleUnlike, handleComment, handleUncomment, account } =
-    useAccount();
+  const {
+    handleLike,
+    handleUnlike,
+    handleComment,
+    handleUncomment,
+    updatePov,
+    account,
+    notify,
+    loading: actionLoading,
+  } = useAccount();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [openCommentPoVDialog, setOpenCommentPoVDialog] = useState(false);
-  const [speedActions, setSpeedActions] = useState([
-    { icon: <FileCopy />, name: "Copy" },
-    { icon: <Share />, name: "Share" },
-    { icon: <Comment />, name: "Comment" },
-  ]);
+  const isAuthor = account && account.id === pov?.author?.id;
+  const isAuthenticated = !!account?.id;
+  const likeFound = pov?.likes?.find((like) => account && account.id === like);
 
-  useEffect(() => {
-    async () => {
-      const likeFound = pov.likes.find(
-        (like) => account && account.id === like,
+  const speedActions = useMemo(() => {
+    const actions = [];
+
+    // Base actions for everyone
+    actions.push({ icon: <Share fontSize="small" />, name: "Share" });
+    actions.push({ icon: <FileCopy fontSize="small" />, name: "Copy" });
+
+    if (!isAuthenticated) {
+      return actions;
+    }
+
+    // Interactions for authenticated users
+    actions.push({ icon: <Comment fontSize="small" />, name: "Comment" });
+    actions.push(
+      likeFound
+        ? {
+            icon: <FavoriteRounded fontSize="small" />,
+            name: `Unlike (${formatNumber(pov?.likes?.length || 0)})`,
+          }
+        : {
+            icon: <FavoriteBorder fontSize="small" />,
+            name: `Like (${formatNumber(pov?.likes?.length || 0)})`,
+          },
+    );
+
+    // Management actions for the author
+    if (isAuthenticated && isAuthor) {
+      actions.push({ icon: <EditNote fontSize="small" />, name: "Edit" });
+      actions.push({
+        icon: <DeleteSweep fontSize="small" />,
+        name: "Delete",
+      });
+      actions.push(
+        pov.published
+          ? { icon: <PublicRounded fontSize="small" />, name: "Unpublish" }
+          : { icon: <PublicOffRounded fontSize="small" />, name: "Publish" },
       );
-      account && account.id === pov.author.id
-        ? setSpeedActions([
-            {
-              icon: <DeleteSweep />,
-              name: "Delete",
-            },
-            { icon: <EditNote />, name: "Edit" },
-            pov.published
-              ? { icon: <PublicRounded />, name: "Unpublish" }
-              : { icon: <PublicOffRounded />, name: "Publish" },
-            { icon: <Share />, name: "Share" },
-            { icon: <Comment />, name: "Comment" },
-            likeFound
-              ? {
-                  icon: <FavoriteRounded />,
-                  name: `Unlike (${formatNumber(pov.likes.length)})`,
-                }
-              : {
-                  icon: <FavoriteBorder />,
-                  // name: `Like (${formatNumber(pov.likeCount)})`,
-                  name: `Like (${formatNumber(pov.likes.length)})`,
-                },
-          ])
-        : setSpeedActions([
-            { icon: <FileCopy />, name: "Copy" },
-            { icon: <Share />, name: "Share" },
-            { icon: <Comment />, name: "Comment" },
-            likeFound
-              ? {
-                  icon: <FavoriteRounded />,
-                  name: `Unlike (${formatNumber(pov.likes.length)})`,
-                }
-              : {
-                  icon: <FavoriteBorder />,
-                  // name: `Like (${formatNumber(pov.likeCount)})`,
-                  name: `Like (${formatNumber(pov.likes.length)})`,
-                },
-          ]);
-    };
-  }, [account, pov]);
+    }
+
+    return actions;
+  }, [isAuthenticated, isAuthor, pov, likeFound]);
+
+  const handlePublishPoV = useCallback(
+    () => updatePov(pov.id, { published: !pov.published }),
+    [updatePov, pov.id, pov.published],
+  );
 
   const handleCommentPoV = async (event) => {
     event.preventDefault();
@@ -110,57 +114,13 @@ const PovCard = ({
     formData.append("povId", pov.id);
     const formJson = Object.fromEntries(formData.entries());
 
-    await handleComment(pov.id, account.id, formJson)
+    await handleComment(pov.id, account, formJson)
       .then(() => {
         setOpenCommentPoVDialog(false);
       })
       .catch((error) => {
         console.error("Error commenting on PoV:", error);
       });
-  };
-
-  const handleClickAction = (action) => {
-    switch (action) {
-      case "Delete":
-        setDeleteDialogOpen(true);
-        break;
-
-      case "Edit":
-        onEdit(pov);
-        break;
-
-      case "Publish":
-        onPublish(pov.id);
-        break;
-
-      case "Unpublish":
-        onPublish(pov.id);
-        break;
-
-      case "Share":
-        // console.log(action);
-        handleShare();
-        break;
-
-      case "Copy":
-        console.log(action);
-        break;
-
-      case `Like (${formatNumber(pov.likeCount)})`:
-        handleLike();
-        break;
-
-      case `UnLike (${formatNumber(pov.likeCount)})`:
-        handleUnlike();
-        break;
-
-      case "Comment":
-        setOpenCommentPoVDialog(true);
-        break;
-
-      default:
-        break;
-    }
   };
 
   const handleAuthorClick = (e) => {
@@ -177,26 +137,29 @@ const PovCard = ({
     setDeleteDialogOpen(false);
   };
 
-  const handleShare = (e) => {
-    e.stopPropagation();
-    try {
-      if (
-        navigator.share &&
-        /mobile|android|iphone/i.test(navigator.userAgent)
-      ) {
-        const url = `${window.location.origin}/pov/${pov?.id}`;
-        navigator
-          .share({ title: pov?.title, text: pov?.description, url })
-          .catch(() => {
-            setShareDialogOpen(true);
-          });
-      } else {
+  const handleShare = useCallback(
+    (e) => {
+      e.stopPropagation();
+      try {
+        if (
+          navigator.share &&
+          /mobile|android|iphone/i.test(navigator.userAgent)
+        ) {
+          const url = `${window.location.origin}/pov/${pov?.id}`;
+          navigator
+            .share({ title: pov?.title, text: pov?.description, url })
+            .catch(() => {
+              setShareDialogOpen(true);
+            });
+        } else {
+          setShareDialogOpen(true);
+        }
+      } catch {
         setShareDialogOpen(true);
       }
-    } catch {
-      setShareDialogOpen(true);
-    }
-  };
+    },
+    [pov],
+  );
 
   const formatDate = (dateValue) => {
     if (!dateValue) return "Date unknown";
@@ -215,6 +178,69 @@ const PovCard = ({
     }
     return "Invalid date";
   };
+
+  const handleClickAction = useCallback(
+    (action) => {
+      switch (action) {
+        case "Delete":
+          setDeleteDialogOpen(true);
+          break;
+
+        case "Edit":
+          onEdit(pov);
+          break;
+
+        case "Publish":
+          handlePublishPoV();
+          break;
+
+        case "Unpublish":
+          handlePublishPoV();
+          break;
+
+        case "Share":
+          // console.log(action);
+          handleShare();
+          break;
+
+        case "Copy":
+          try {
+            const textToCopy = `${pov?.title}\n\n${pov?.description}\n\nShared via PoV`;
+            navigator.clipboard.writeText(textToCopy);
+            notify("PoV copied to clipboard!", "success");
+          } catch (err) {
+            notify("Failed to copy PoV", "error");
+            console.error("Failed to copy: ", err);
+          }
+          break;
+
+        case `Like (${formatNumber(pov?.likes?.length || 0)})`:
+          if (account?.id) handleLike(pov.id, account.id);
+          break;
+
+        case `Unlike (${formatNumber(pov?.likes?.length || 0)})`:
+          if (account?.id) handleUnlike(pov.id, account.id);
+          break;
+
+        case "Comment":
+          setOpenCommentPoVDialog(true);
+          break;
+
+        default:
+          break;
+      }
+    },
+    [
+      handleLike,
+      handleUnlike,
+      notify,
+      account,
+      pov,
+      handleShare,
+      onEdit,
+      handlePublishPoV,
+    ],
+  );
 
   return (
     <>
@@ -388,7 +414,7 @@ const PovCard = ({
                   lineHeight: 1.6,
                   mb: 1,
                   display: "-webkit-box",
-                  WebkitLineClamp: showActions ? 5 : "none",
+                  // WebkitLineClamp: showActions ? 5 : "none",
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
                 }}
@@ -510,6 +536,8 @@ const PovCard = ({
         handleSubmit={handleCommentPoV}
         handleUncomment={handleUncomment}
         pov={pov}
+        account={account}
+        loading={actionLoading || loading}
       />
 
       <SharePovModal

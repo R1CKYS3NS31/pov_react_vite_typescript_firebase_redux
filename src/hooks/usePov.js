@@ -6,63 +6,68 @@ import {
 } from "../service/firebase/controller/pov-firebase";
 import { useNotificationHandler } from "./useNotificationHandler";
 import { selectPovsPage } from "../service/redux/selectors/povSelector";
-import { setPovs } from "../service/redux/slices/pov/povSlice";
-import { useEffect, useMemo } from "react";
+import { setPovs, appendPovs } from "../service/redux/slices/pov/povSlice";
+import { useEffect, useCallback, useState } from "react";
 
 export const usePov = ({
   search = "",
-  page = 0,
   size = 12,
   sortBy = "createdAt",
 } = {}) => {
   const dispatch = useDispatch();
-  
+  const [lastVisible, setLastVisible] = useState(null);
+
   const notificationHandler = useNotificationHandler();
-  const { notification, closeNotification } =
-    notificationHandler;
+  const { notification, closeNotification } = notificationHandler;
 
   const reduxPovsPage = useSelector(selectPovsPage);
 
-  // Fetching all PoVs
-  const { data: fetchedPovsData, loading: allLoading } = useFetchData(
-    getPoVsPublishedFirebase,
-    { page, size, sortBy },
-    { notificationHandler },
-  );
+  // Reset lastVisible when filters change to start a new page sequence
+  useEffect(() => {
+    setLastVisible(null);
+  }, [search, sortBy, size]);
 
-  // Fetching searched PoVs
-  const { data: searchedPovsData, loading: searchLoading } = useFetchData(
-    search ? () => searchPoVsByTitleFirebase(search) : null,
-    search,
+  const { data: fetchedPovsData, loading } = useFetchData(
+    search ? searchPoVsByTitleFirebase : getPoVsPublishedFirebase,
+    {
+      searchTitle: search,
+      size,
+      sortBy,
+      lastVisible,
+    },
     { notificationHandler },
   );
 
   useEffect(() => {
     if (fetchedPovsData) {
-      dispatch(setPovs(fetchedPovsData));
+      if (lastVisible) {
+        dispatch(appendPovs(fetchedPovsData));
+      } else {
+        dispatch(setPovs(fetchedPovsData));
+      }
     }
-  }, [fetchedPovsData, dispatch]);
+  }, [fetchedPovsData, dispatch, lastVisible]);
 
-  useEffect(() => {
-    if (searchedPovsData && search) {
-      dispatch(setPovs(searchedPovsData));
-    }
-  }, [searchedPovsData, search, dispatch]);
-  
-  const allPovs = useMemo(() => {
-    if (fetchedPovsData?.empty) return reduxPovsPage;
-    return fetchedPovsData;
-  }, [fetchedPovsData, reduxPovsPage]);
+  // const allPovs = useMemo(() => {
+  //   if (fetchedPovsData?.empty) return reduxPovsPage;
+  //   return fetchedPovsData;
+  // }, [fetchedPovsData, reduxPovsPage]);
 
-  const searchedPovs = useMemo(() => {
-    if (searchedPovsData?.empty) return reduxPovsPage;
-    return searchedPovsData;
-  }, [searchedPovsData, reduxPovsPage]);
+  // const searchedPovs = useMemo(() => {
+  //   if (searchedPovsData?.empty) return reduxPovsPage;
+  //   return searchedPovsData;
+  // }, [searchedPovsData, reduxPovsPage]);
+
+  const loadMore = useCallback(() => {
+    if (reduxPovsPage.last || loading || !fetchedPovsData?.lastVisible) return;
+    setLastVisible(fetchedPovsData.lastVisible);
+  }, [reduxPovsPage.last, loading, fetchedPovsData]);
 
   return {
-    allPovs,
-    searchedPovs,
-    loading: allLoading || searchLoading,
+    povs: reduxPovsPage,
+    hasMore: !reduxPovsPage.last && !!fetchedPovsData?.lastVisible && !loading,
+    loading,
+    loadMore,
     closeNotification,
     notification,
   };

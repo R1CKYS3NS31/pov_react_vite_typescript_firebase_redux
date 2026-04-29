@@ -13,8 +13,9 @@ import {
   setDoc,
   updateDoc,
   where,
-  getCountFromServer,
   orderBy,
+  startAfter,
+  getCountFromServer,
 } from "firebase/firestore";
 import { firebaseApp } from "./firebase-config";
 
@@ -49,6 +50,7 @@ const firestoreConverter = {
     id: snapshot.id,
     exists: snapshot.exists(),
     ...toPlain(snapshot.data()),
+    _snapshot: snapshot, // Keep snapshot for cursor pagination
   }),
 };
 
@@ -82,40 +84,29 @@ export const saveDocData = async (
 };
 
 /**
- * Load documents from a collection with limit and optional filters.
- * Simulates offset pagination by fetching up to the requested page.
+ * Load documents from a collection using cursor pagination.
  */
-export const loadDocsData = async (collectionName, page = 0, size = 12, sortBy = "createdAt", sortDirection = "desc") => {
+export const loadDocsData = async (collectionName, size = 12, sortBy = "createdAt", sortDirection = "desc", lastVisible = null) => {
   const colRef = getCol(collectionName);
   
-  // Get total count
-  const snapshotCount = await getCountFromServer(colRef);
-  const totalElements = snapshotCount.data().count;
-  const totalPages = Math.ceil(totalElements / size);
-
-  // Fetch documents up to the requested page
-  const fetchLimit = (page + 1) * size;
-  let q;
-  if (sortBy) {
-    q = query(colRef, orderBy(sortBy, sortDirection), limit(fetchLimit));
-  } else {
-    q = query(colRef, limit(fetchLimit));
+  const queryConstraints = [orderBy(sortBy, sortDirection), limit(size)];
+  if (lastVisible) {
+    queryConstraints.push(startAfter(lastVisible));
   }
+  
+  const q = query(colRef, ...queryConstraints);
 
   return await getDocs(q)
     .then((snapshot) => {
-      // Slice the array to return only the documents for the current page
-      const startIndex = page * size;
-      const pageDocs = snapshot.docs.slice(startIndex);
+      const docs = snapshot.docs;
+      const lastDoc = docs[docs.length - 1];
 
       return {
-        size: pageDocs.length,
-        empty: pageDocs.length === 0,
-        // converter handles id, exists, and Timestamp serialization
-        content: pageDocs.map((d) => d.data()),
-        totalPages,
-        totalElements,
-        number: page,
+        size: docs.length,
+        empty: docs.length === 0,
+        content: docs.map((d) => d.data()),
+        lastVisible: lastDoc,
+        last: docs.length < size,
       };
     })
     .catch((error) => {
@@ -149,55 +140,37 @@ export const loadDocDataById = async (
 };
 
 /**
- * Load documents with a simple WHERE filter.
- * Simulates offset pagination by fetching up to the requested page.
+ * Load documents with a simple WHERE filter using cursor pagination.
  */
 export const loadDocsDataWhere = async (
   collectionName,
-  page = 0,
   size = 12,
-  filters = [{ field: "", operator: "==", value: "" }],
-  sortBy = null,
+  filters = [],
+  sortBy = "createdAt",
   sortDirection = "desc",
+  lastVisible = null,
 ) => {
   const colRef = getCol(collectionName);
-  const filterQuery = filters.map(({ field, operator, value }) => where(field, operator, value));
+  const filterConstraints = filters.map(({ field, operator, value }) => where(field, operator, value));
   
-  let qBase;
-  if (sortBy) {
-    qBase = query(colRef, ...filterQuery, orderBy(sortBy, sortDirection));
-  } else {
-    qBase = query(colRef, ...filterQuery);
+  const queryConstraints = [...filterConstraints, orderBy(sortBy, sortDirection), limit(size)];
+  if (lastVisible) {
+    queryConstraints.push(startAfter(lastVisible));
   }
 
-  // Get total count for the filtered query
-  const snapshotCount = await getCountFromServer(qBase);
-  const totalElements = snapshotCount.data().count;
-  const totalPages = Math.ceil(totalElements / size);
+  const q = query(colRef, ...queryConstraints);
 
-  // Fetch documents up to the requested page
-  const fetchLimit = (page + 1) * size;
-  let qLimit;
-  if (sortBy) {
-    qLimit = query(colRef, ...filterQuery, orderBy(sortBy, sortDirection), limit(fetchLimit));
-  } else {
-    qLimit = query(colRef, ...filterQuery, limit(fetchLimit));
-  }
-
-  return await getDocs(qLimit)
+  return await getDocs(q)
     .then((snapshot) => {
-      // Slice the array to return only the documents for the current page
-      const startIndex = page * size;
-      const pageDocs = snapshot.docs.slice(startIndex);
+      const docs = snapshot.docs;
+      const lastDoc = docs[docs.length - 1];
 
       return {
-        size: pageDocs.length,
-        empty: pageDocs.length === 0,
-        // converter handles id, exists, and Timestamp serialization
-        content: pageDocs.map((d) => d.data()),
-        totalPages,
-        totalElements,
-        number: page,
+        size: docs.length,
+        empty: docs.length === 0,
+        content: docs.map((d) => d.data()),
+        lastVisible: lastDoc,
+        last: docs.length < size,
       };
     })
     .catch((error) => {

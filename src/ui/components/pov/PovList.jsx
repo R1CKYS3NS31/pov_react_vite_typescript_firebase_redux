@@ -1,26 +1,46 @@
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Skeleton from "@mui/material/Skeleton";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
 import PovCard from "./PovCard";
 
 const PovList = memo(({
-  povs = [],
+  povs,
   loading = false,
   onDelete,
   onEdit,
-  onPublish,
   likedPovIds = [], 
-  currentPage = 0,
-  totalPages = 1,
-  onPageChange,
+  hasMore = false,
+  onLoadMore,
+  loadingMore = false,
   emptyMessage = 'No POVs found',
 }) => {
+  const loadMoreRef = useRef(null);
+
+  useEffect(() => {
+    if (!onLoadMore || !hasMore || loading || loadingMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          onLoadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasMore, onLoadMore, loading, loadingMore]);
+
   if (loading) {
     return (
       <Stack spacing={3}>
@@ -52,7 +72,7 @@ const PovList = memo(({
     );
   }
 
-  if (!povs || povs.length === 0) {
+  if (povs?.empty) {
     return (
       <Stack
         spacing={1}
@@ -81,31 +101,29 @@ const PovList = memo(({
   return (
     <Box>
       <Stack spacing={3}>
-        {povs.map((pov) => (
+        {povs?.content?.map((pov) => (
           <PovCard
             key={pov.id}
             pov={pov}
             onDelete={onDelete}
             onEdit={onEdit}
-            onPublish={onPublish}
             isLiked={likedPovIds.includes(pov.id)}
-            showActions={!!(onDelete || onEdit || onPublish)}
           />
         ))}
       </Stack>
 
-      {totalPages > 1 && (
-        <Box display="flex"  sx={{ mt: 6, mb: 2, justifyContent:"center"}}>
-          <Pagination
-            count={totalPages}
-            page={currentPage + 1}
-            onChange={(e, page) => onPageChange?.(page - 1)}
-            color="primary"
-            size="large"
-            shape="rounded"
-          />
-        </Box>
-      )}
+      {/* Infinite Scroll Trigger */}
+      <Box 
+        ref={loadMoreRef} 
+        sx={{ 
+          py: 4, 
+          display: 'flex', 
+          justifyContent: 'center',
+          visibility: hasMore ? 'visible' : 'hidden'
+        }}
+      >
+        {loadingMore && <CircularProgress size={32} thickness={5} />}
+      </Box>
     </Box>
   );
 });

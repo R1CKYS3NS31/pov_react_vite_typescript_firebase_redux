@@ -15,16 +15,23 @@ export const povSlice = createSlice({
   initialState: initialState,
   reducers: {
     setPovs: (state, action) => {
-      return action.payload;
+      const { content, last, totalElements, size } = action.payload;
+      state.content = content;
+      state.last = last;
+      state.totalElements = totalElements || content.length;
+      state.size = size || state.size;
+      state.empty = content.length === 0;
+    },
+    appendPovs: (state, action) => {
+      const { content, last } = action.payload;
+      state.content = [...state.content, ...content];
+      state.last = last;
+      state.empty = state.content.length === 0;
     },
     addPoV: (state, action) => {
       const pov = action.payload;
-      // state.push(pov);
       state.content.unshift(pov);
       state.totalElements += 1;
-      state.totalPages = Math.ceil(state.totalElements / state.size);
-      state.number = Math.floor(state.totalElements / state.size) - 1;
-      state.last = state.number === state.totalPages - 1;
       state.empty = false;
     },
     editPoV: (state, action) => {
@@ -40,10 +47,7 @@ export const povSlice = createSlice({
         (existingPoV) => existingPoV.id !== povIdToDelete,
       );
       state.totalElements -= 1;
-      state.totalPages = Math.ceil(state.totalElements / state.size);
-      state.number = Math.floor(state.totalElements / state.size) - 1;
-      state.last = state.number === state.totalPages - 1;
-      state.empty = state.totalElements === 0;
+      state.empty = state.content.length === 0;
     },
     removeAllPoVs: () => initialState,
   },
@@ -51,6 +55,7 @@ export const povSlice = createSlice({
 
 export const {
   setPovs,
+  appendPovs,
   addPoV,
   editPoV,
   removePov,

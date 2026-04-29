@@ -19,14 +19,6 @@ import { AccountPovPanel } from "../../components/account/AccountPovPanel";
 import { AccountSettingsDialog } from "../../components/account/AccountSettingsDialog";
 import { PovDialog } from "../../components/pov/PovDialog";
 
-/* ─── helpers ─────────────────────────────────────────────────────────────── */
-const toArray = (data) => {
-  if (!data) return [];
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.content)) return data.content;
-  return [];
-};
-
 const Account = () => {
   const theme = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,7 +26,6 @@ const Account = () => {
   const isDark = theme.palette.mode === "dark";
   const primary = theme.palette.primary.main;
 
-  /* ── data ── */
   const {
     account,
     deleteAccount,
@@ -43,7 +34,6 @@ const Account = () => {
     localPoVs,
     deletePovLocal,
     deletePov,
-    updatePov,
     loading,
   } = useAccount();
 
@@ -53,12 +43,6 @@ const Account = () => {
     handleUpdatePassword: updatePassword,
   } = useAuth();
 
-  const myItems    = toArray(myPoVs);
-  const localItems = toArray(localPoVs);
-  const myPages    = myPoVs?.totalPages    ?? 1;
-  const localPages = localPoVs?.totalPages ?? 1;
-
-  /* ── local UI state ── */
   const [settingsOpen,  setSettingsOpen]  = useState(false);
   const [povDialogOpen, setPovDialogOpen] = useState(false);
   const [editingPov,    setEditingPov]    = useState(null);
@@ -67,7 +51,7 @@ const Account = () => {
     parseInt(searchParams.get("tab") || "0", 10),
   );
 
-  /* ── handlers ── */
+
   const handleTabChange = (_, newValue) => {
     setActiveTab(newValue);
     setSearchParams({ tab: newValue });
@@ -85,12 +69,9 @@ const Account = () => {
     setPovDialogOpen(true);
   };
 
-  const handlePublish = (pov) => updatePov(pov.id, { published: !pov.published });
-
-  /* ─── render ─────────────────────────────────────────────────────────────── */
   return (
     <Box sx={{ position: "relative", minHeight: "calc(100vh - 48px)", p: { xs: 1.5, md: 2.5 } }}>
-      {/* Ambient glow */}
+      
       <Box
         aria-hidden="true"
         sx={{
@@ -109,19 +90,17 @@ const Account = () => {
 
       <Grid container spacing={2.5} sx={{ position: "relative", zIndex: 1, width: "100%" }}>
 
-        {/* ── Left: profile sidebar ────────────────────────────────────────── */}
         <Grid size={{ xs: 12, md: 4, lg: 3 }}>
           <AccountProfileCard
             account={account}
             isAuthenticated={isAuthenticated}
-            myCount={myItems.length}
-            localCount={localItems.length}
+            myCount={myPoVs?.totalElements}
+            localCount={localPoVs?.totalElements}
             onEditProfile={() => setSettingsOpen(true)}
             onSignOut={handleSignOut}
           />
         </Grid>
 
-        {/* ── Right: perspectives panel ─────────────────────────────────────── */}
         <Grid size={{ xs: 12, md: 8, lg: 9 }}>
           <Box
             sx={{
@@ -140,17 +119,15 @@ const Account = () => {
           <AccountPovTabs
             activeTab={activeTab}
             onChange={handleTabChange}
-            localCount={localItems.length}
-            myCount={myItems.length}
+            localCount={localPoVs?.totalElements}
+            myCount={myPoVs?.totalElements}
           />
 
-          {/* Local Drafts panel */}
           {activeTab === 0 && (
             <AccountPovPanel
               id="account-tabpanel-local"
               labelledBy="account-tab-local"
-              items={localItems}
-              totalPages={localPages}
+              items={localPoVs}
               loading={loading}
               emptyIcon={<FolderRounded sx={{ fontSize: 44 }} />}
               emptyTitle="No local drafts yet"
@@ -172,13 +149,11 @@ const Account = () => {
             />
           )}
 
-          {/* My POVs panel */}
           {activeTab === 1 && (
             <AccountPovPanel
               id="account-tabpanel-posted"
               labelledBy="account-tab-posted"
-              items={myItems}
-              totalPages={myPages}
+              items={myPoVs}
               loading={loading}
               emptyIcon={<CloudUploadRounded sx={{ fontSize: 44 }} />}
               emptyTitle={isAuthenticated ? "No posted perspectives yet" : "Not signed in"}
@@ -214,7 +189,7 @@ const Account = () => {
               emptyMessage="No posted perspectives yet."
               onEdit={(pov) => handleEditPov(pov, false)}
               onDelete={deletePov}
-              onPublish={handlePublish}
+              // onPublish={handlePublish}
             />
           )}
         </Grid>
