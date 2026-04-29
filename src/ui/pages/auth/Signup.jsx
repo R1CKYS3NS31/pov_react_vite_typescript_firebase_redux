@@ -44,9 +44,7 @@ const Signup = () => {
       description: formData.description,
     };
 
-    await handleSignUp(userData).then((user) => {
-      if (user) navigate("/");
-    });
+    await handleSignUp(userData).then(() => navigate("/"));
   };
 
   return (

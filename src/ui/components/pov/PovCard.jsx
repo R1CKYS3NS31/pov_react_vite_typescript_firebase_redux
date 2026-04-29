@@ -247,7 +247,7 @@ const PovCard = ({
       <Card
         sx={{
           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          mb: 1.5,
+          // mb: 1.5,
           "&:hover": {
             transform: "translateY(-4px)",
             boxShadow: (theme) => theme.customShadows?.z4 || theme.shadows[4],
@@ -472,7 +472,7 @@ const PovCard = ({
           bottom: "0px",
           right: "0px",
         }}
-        icon={<SpeedDialIcon openIcon={<AddReactionOutlined />} />}
+        icon={<SpeedDialIcon openIcon={<AddReactionOutlined  />} />}
       >
         {speedActions.map((action) => (
           <SpeedDialAction

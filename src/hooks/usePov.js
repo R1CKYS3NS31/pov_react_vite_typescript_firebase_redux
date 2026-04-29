@@ -24,7 +24,7 @@ export const usePov = ({
 
   // Reset lastVisible when filters change to start a new page sequence
   useEffect(() => {
-    setLastVisible(null);
+    return () => setLastVisible(null);
   }, [search, sortBy, size]);
 
   const { data: fetchedPovsData, loading } = useFetchData(

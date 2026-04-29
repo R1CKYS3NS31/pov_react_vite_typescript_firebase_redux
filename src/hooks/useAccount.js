@@ -37,7 +37,7 @@ import {
   editPoVLocal,
   removePovLocal,
 } from "../service/redux/slices/pov/povLocalSlice";
-import { editPoV } from "../service/redux/slices/pov/povSlice";
+import { editPoV, removePov } from "../service/redux/slices/pov/povSlice";
 
 export const useAccount = () => {
   const dispatch = useDispatch();
@@ -174,6 +174,7 @@ export const useAccount = () => {
       return updatePoVFirebase(povId, povData)
         .then((response) => {
           dispatch(editMyPov(response));
+          dispatch(editPoV(response));
           notify("PoV updated successfully!", "success");
           return response;
         })
@@ -202,7 +203,8 @@ export const useAccount = () => {
       return deletePoVFirebase(povId)
         .then((response) => {
           if (response) {
-            dispatch(removeMyPov(povId));
+            dispatch(removeMyPov(povId)); 
+            dispatch(removePov(povId));
             notify("PoV deleted successfully!", "success");
           }
           return response;
