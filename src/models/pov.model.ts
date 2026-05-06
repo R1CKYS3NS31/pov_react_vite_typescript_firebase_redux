@@ -24,7 +24,9 @@ export interface PoV {
   author: string | User;
   published: boolean;
   likes: string[];
+  likesCount: number;
   comments: PoVComment[];
+  commentsCount: number;
   createdAt?: string;
   updatedAt?: string;
   exists?: boolean;

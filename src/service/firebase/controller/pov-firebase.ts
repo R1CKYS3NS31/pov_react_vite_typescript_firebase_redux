@@ -35,7 +35,9 @@ export const savePoVFirebase = async (pov: Partial<PoV> = {}): Promise<PoV> => {
     author: author || "",
     published: false,
     likes: [],
+    likesCount: 0,
     comments: [],
+    commentsCount: 0,
   };
 
   return await saveDocData(collectionName, "", povData)
@@ -294,6 +296,7 @@ export const likePoVFirebase = async (povId: string, userId: string): Promise<Po
         povId,
         {
           likes: updatedLikes,
+          likesCount: updatedLikes.length,
         }
       )
         .then(async () => await getPoVFirebase(povId))
@@ -317,6 +320,7 @@ export const unLikePoVFirebase = async (povId: string, userId: string): Promise<
         povId,
         {
           likes: updatedLikes,
+          likesCount: updatedLikes.length,
         }
       )
         .then(async () => await getPoVFirebase(povId))
@@ -354,6 +358,7 @@ export const commentOnPoVFirebase = async (povId: string, account: User, comment
         povId,
         {
           comments: updatedComments,
+          commentsCount: updatedComments.length,
         }
       )
         .then(async () => await getPoVFirebase(povId))
@@ -379,6 +384,7 @@ export const uncommentPoVFirebase = async (povId: string, commentId: string | nu
         povId,
         {
           comments: updatedComments,
+          commentsCount: updatedComments.length,
         }
       )
         .then(async () => await getPoVFirebase(povId))
@@ -420,4 +426,18 @@ const povPopulate = async (povData: PoV): Promise<PoV> => {
         author: { id: authorId } as User, // Return partial user if fetch fails
       };
     });
+};
+
+/**
+ * Migration function to add likesCount and commentsCount to existing PoVs.
+ */
+export const migratePovsCounts = async () => {
+  const querySnapshot = await loadDocsData<PoV>(collectionName, 1000); // Load all
+  const updatePromises = querySnapshot.content.map(async (pov) => {
+    return await updateDocData(collectionName, pov.id, {
+      likesCount: (pov.likes || []).length,
+      commentsCount: (pov.comments || []).length,
+    });
+  });
+  return await Promise.all(updatePromises);
 };

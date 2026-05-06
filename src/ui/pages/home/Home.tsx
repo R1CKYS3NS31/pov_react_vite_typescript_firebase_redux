@@ -9,12 +9,21 @@ import PovList from "../../components/pov/PovList";
 import { PoVNotification } from "../../components/notification/PoVNotification";
 import type { PoV } from "../../../models/pov.model";
 import { PovDialog } from "../../components/pov";
+import { useEffect } from "react";
+import { migratePovsCounts } from "../../../service/firebase/controller/pov-firebase";
 
 const Home: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
   const [povDialogOpen, setPovDialogOpen] = useState(false);
   const [editingPov, setEditingPov] = useState<PoV | null>(null);
+
+  useEffect(() => {
+    // Run migration for existing data to fix sorting fields
+    migratePovsCounts()
+      .then(() => console.log("Data migration for sorting fields completed."))
+      .catch((err) => console.error("Migration failed:", err));
+  }, []);
 
 
   const {
